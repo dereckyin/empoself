@@ -107,65 +107,65 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="container" id="app">
         <!-- 第一部分 -->
         <div id="section1">
             <h1>基本資料</h1>
             <label for="name">姓名 <span class="star">*</span></label>
-            <input type="text" id="name" required>
+            <input type="text" id="name" required v-model="name">
 
             <label for="gender">性別</label>
-            <select id="gender">
+            <select id="gender" v-model="gender">
                 <option value=""></option>
                 <option value="male">男性</option>
                 <option value="female">女性</option>
             </select>
 
             <label for="birthday">生日 <span class="star">*</span></label>
-            <input type="date" id="birthday" required>
+            <input type="date" id="birthday" required v-model="birthday">
 
             <label for="phone">手機號碼 <span class="star">*</span></label>
-            <input type="tel" id="phone" required>
+            <input type="tel" id="phone" required v-model="phone">
 
             <label for="email">Email <span class="star">*</span></label>
-            <input type="email" id="email" required>
+            <input type="email" id="email" required v-model="email">
 
             <label for="address">住址 <span class="star">*</span></label>
-            <input type="text" id="address" required>
+            <input type="text" id="address" required v-model="address">
 
             <label for="emergency-contact">緊急連絡人 <span class="star">*</span></label>
-            <input type="text" id="emergency-contact" required>
+            <input type="text" id="emergency-contact" required v-model="emergency_contact">
 
             <label for="emergency-phone">緊急連絡人電話 <span class="star">*</span></label>
-            <input type="tel" id="emergency-phone" required>
+            <input type="tel" id="emergency-phone" required v-model="emergency_contact_phone">
 
             <label>如何知道我們的(若選親友介紹，請在其他的部分填寫親友姓名)</label>
             <div class="checkbox-group">
-                <label><input type="checkbox" value="nearby"> 住附近（走路10分鐘內）</label>
-                <label><input type="checkbox" value="experience"> 路過被體驗課吸引</label>
-                <label><input type="checkbox" value="referral"> 親友介紹</label>
-                <label><input type="checkbox" value="social"> 社群網路</label>
-                <label><input type="checkbox" value="advertisement"> 看到實體廣告</label>
-                <label><input type="checkbox" value="other"> 其他：<input type="text" id="other-info"></label>
+                <label><input type="checkbox" value="nearby" v-model="referral_source"> 住附近（走路10分鐘內）</label>
+                <label><input type="checkbox" value="experience" v-model="referral_source"> 路過被體驗課吸引</label>
+                <label><input type="checkbox" value="referral" v-model="referral_source"> 親友介紹</label>
+                <label><input type="checkbox" value="social" v-model="referral_source"> 社群網路</label>
+                <label><input type="checkbox" value="advertisement" v-model="referral_source"> 看到實體廣告</label>
+                <label><input type="checkbox" value="other" v-model="referral_source"> 其他：<input type="text" id="other-info" v-model="referral_source_other"></label>
 
             </div>
 
             <label>體況 (其他請詳細描述體況) <span class="star">*</span></label>
             <div class="checkbox-group">
-                <label><input type="checkbox" value="none"> 無</label>
-                <label><input type="checkbox" value="heart"> 心血管疾病</label>
-                <label><input type="checkbox" value="diabetes"> 糖尿病</label>
-                <label><input type="checkbox" value="asthma"> 氣喘</label>
-                <label><input type="checkbox" value="arthritis"> 關節炎</label>
-                <label><input type="checkbox" value="surgery"> 重大手術</label>
-                <label><input type="checkbox" value="wheelchair"> 車禍</label>
-                <label><input type="checkbox" value="pregnancy"> 懷孕或半年內生產</label>
-                <label><input type="checkbox" value="spine"> 脊椎相關病變</label>
-                <label><input type="checkbox" value="anemia"> 貧血</label>
-                <label><input type="checkbox" value="infection"> 過去病史</label>
-                <label><input type="checkbox" value="medication"> 服用藥物</label>
-                <label><input type="checkbox" value="hospitalized"> 半年內住過院</label>
-                <label><input type="checkbox" value="other"> 其他：<input type="text" id="condition-other"></label>
+                <label><input type="checkbox" value="none" v-model="health_condition"> 無</label>
+                <label><input type="checkbox" value="heart" v-model="health_condition"> 心血管疾病</label>
+                <label><input type="checkbox" value="diabetes" v-model="health_condition"> 糖尿病</label>
+                <label><input type="checkbox" value="asthma" v-model="health_condition"> 氣喘</label>
+                <label><input type="checkbox" value="arthritis" v-model="health_condition"> 關節炎</label>
+                <label><input type="checkbox" value="surgery" v-model="health_condition"> 重大手術</label>
+                <label><input type="checkbox" value="wheelchair" v-model="health_condition"> 車禍</label>
+                <label><input type="checkbox" value="pregnancy" v-model="health_condition"> 懷孕或半年內生產</label>
+                <label><input type="checkbox" value="spine" v-model="health_condition"> 脊椎相關病變</label>
+                <label><input type="checkbox" value="anemia" v-model="health_condition"> 貧血</label>
+                <label><input type="checkbox" value="infection" v-model="health_condition"> 過去病史</label>
+                <label><input type="checkbox" value="medication" v-model="health_condition"> 服用藥物</label>
+                <label><input type="checkbox" value="hospitalized" v-model="health_condition"> 半年內住過院</label>
+                <label><input type="checkbox" value="other" v-model="health_condition"> 其他：<input type="text" id="condition-other" v-model="health_condition_other"></label>
             </div>
 
             <button onclick="nextSection(1)">下一步</button>
@@ -192,4 +192,8 @@
        
     </div>
 </body>
+<script defer src="js/npm/vue/dist/vue.js"></script> 
+<script defer src="js/axios.min.js"></script> 
+<script defer src="js/npm/sweetalert2@9.js"></script>
+<script defer src="js/consult.js"></script>
 </html>
