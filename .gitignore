@@ -35,5 +35,12 @@ Thumbs.db
 *.swp
 *.swo
 
+*.json
+
+*.inc
+
+conf.php
+core.php
+
 .phpunit.result.cache
 composer.lock
