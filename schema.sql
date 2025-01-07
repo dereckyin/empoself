@@ -1,6 +1,8 @@
-CREATE TABLE IF NOT EXISTS `consult` (
+CREATE TABLE IF NOT EXISTS `user` (
     `id` bigint(20) unsigned  COLLATE utf8mb4_unicode_ci AUTO_INCREMENT,
     `name` VARCHAR(200) COLLATE utf8mb4_unicode_ci default '',
+    `username` VARCHAR(200) COLLATE utf8mb4_unicode_ci default '',
+    `user_type` VARCHAR(20) COLLATE utf8mb4_unicode_ci default '',
     `gender` VARCHAR(10) COLLATE utf8mb4_unicode_ci default '',
     `birthday` VARCHAR(10) COLLATE utf8mb4_unicode_ci default '',
     `phone` VARCHAR(60) COLLATE utf8mb4_unicode_ci default '',
@@ -35,3 +37,4 @@ CREATE TABLE IF NOT EXISTS `consult` (
     `deleted_by` bigint(20) unsigned,
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE='utf8mb4_unicode_ci';
+

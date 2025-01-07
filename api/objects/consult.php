@@ -10,7 +10,7 @@ class Consult {
     }
 
     public function insert($data) {
-        $sql = "insert into consult 
+        $sql = "insert into user 
                 set 
                     name = :name,
                     gender = :gender,
@@ -31,6 +31,7 @@ class Consult {
                     password_hash = :password_hash,
                     contact_time = :contact_time,
                     fitness_goals = :fitness_goals,
+                    user_type = '學員',
                     referrer_name = :referrer_name,
                     height = :height,
                     weight = :weight,
