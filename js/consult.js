@@ -36,77 +36,43 @@ var app = new Vue({
   
     methods:{
       checkForm: function (e) {
-        // if (this.name && this.birthday && this.phone && this.email && this.address && this.emergency_contact && this.emergency_contact_phone && this.referral_source && this.health_condition) {
-        //   return true;
-        // }
+        var must = [];
+
         if (!this.name) {
-          Swal.fire({
-            text: '請填寫姓名',
-            icon: 'warning',
-            confirmButtonText: 'OK'
-          })
-          return false;
+          must = [...must, '姓名'];
         }
 
         if (!this.birthday) {
-          Swal.fire({
-            text: '請填寫生日',
-            icon: 'warning',
-            confirmButtonText: 'OK'
-          })
-          return false;
+          must = [...must, '生日'];
         }
 
         if (!this.phone) {
-          Swal.fire({
-            text: '請填寫電話',
-            icon: 'warning',
-            confirmButtonText: 'OK'
-          })
-          return false;
+          must = [...must, '手機號碼'];
         }
 
         if (!this.email) {
-          Swal.fire({
-            text: '請填寫電子信箱',
-            icon: 'warning',
-            confirmButtonText: 'OK'
-          })
-          return false;
+          must = [...must, 'Email'];
         }
 
         if (!this.address) {
-          Swal.fire({
-            text: '請填寫地址',
-            icon: 'warning',
-            confirmButtonText: 'OK'
-          })
-          return false;
+          must = [...must, '地址'];
         }
 
         if (!this.emergency_contact) {
-          Swal.fire({
-            text: '請填寫緊急聯絡人',
-            icon: 'warning',
-            confirmButtonText: 'OK'
-          })
-          return false;
+          must = [...must, '緊急聯絡人'];
         }
 
         if (!this.emergency_contact_phone) {
-          Swal.fire({
-            text: '請填寫緊急聯絡人電話',
-            icon: 'warning',
-            confirmButtonText: 'OK'
-          })
-          return false;
+          must = [...must, '緊急聯絡人電話'];
         }
 
+        if (this.health_condition.length == 0 && !this.health_condition_other) {
+          must = [...must, '體況'];
+        }
 
-        if (!this.health_condition && !this.health_condition_other) {
+        if(must.length > 0){
           Swal.fire({
-            text: '請填寫健康狀況',
-            icon: 'warning',
+            html: ' 請填寫以下欄位' + "<br>" + must.join('、'),
             confirmButtonText: 'OK'
           })
           return false;
