@@ -168,7 +168,7 @@
                 <label><input type="checkbox" value="other" v-model="health_condition"> 其他：<input type="text" id="condition-other" v-model="health_condition_other"></label>
             </div>
 
-            <button onclick="nextSection(1)">下一步</button>
+            <button @click="nextSection()">下一步</button>
         </div>
 
         <!-- 第二部分 -->
@@ -186,7 +186,7 @@
                 <h3>迷思三：我已經有在爬山、游泳、散步、跑操場，為何還要來上教練課？</h3>
                 <img src="images/image3.jpg" alt="圖片3">
             </div>
-            <button onclick="submitForm()">完成</button>
+            <button @click="submitForm()">完成</button>
         </div>
 
        

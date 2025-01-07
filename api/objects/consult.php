@@ -10,7 +10,7 @@ class Consult {
     }
 
     public function insert($data) {
-        $sql = "insert into consults 
+        $sql = "insert into consult 
                 set 
                     name = :name,
                     gender = :gender,
@@ -20,9 +20,10 @@ class Consult {
                     address = :address,
                     emergency_contact = :emergency_contact,
                     emergency_contact_phone = :emergency_contact_phone,
-                    emergency_contact_relation = :emergency_contact_relation,
                     referral_source = :referral_source,
+                    referral_source_other = :referral_source_other,
                     health_condition = :health_condition,
+                    health_condition_other = :health_condition_other,
                     account_status = :account_status,
                     profile_photo_url = :profile_photo_url,
                     active_branch = :active_branch,
@@ -30,13 +31,16 @@ class Consult {
                     password_hash = :password_hash,
                     contact_time = :contact_time,
                     fitness_goals = :fitness_goals,
-                    referrer_id = :referrer_id,
+                    referrer_name = :referrer_name,
                     height = :height,
                     weight = :weight,
                     default_invoice_type = :default_invoice_type,
                     mobile_barcode = :mobile_barcode,
                     company_tax_id = :company_tax_id,
                     company_name = :company_name";
+
+        // Prepare the statement
+        $stmt = $this->db->prepare($sql);
                     
         // Bind parameters
         $stmt->bindParam(':name', $data['name']);
@@ -47,9 +51,10 @@ class Consult {
         $stmt->bindParam(':address', $data['address']);
         $stmt->bindParam(':emergency_contact', $data['emergency_contact']);
         $stmt->bindParam(':emergency_contact_phone', $data['emergency_contact_phone']);
-        $stmt->bindParam(':emergency_contact_relation', $data['emergency_contact_relation']);
         $stmt->bindParam(':referral_source', $data['referral_source']);
+        $stmt->bindParam(':referral_source_other', $data['referral_source_other']);
         $stmt->bindParam(':health_condition', $data['health_condition']);
+        $stmt->bindParam(':health_condition_other', $data['health_condition_other']);
         $stmt->bindParam(':account_status', $data['account_status']);
         $stmt->bindParam(':profile_photo_url', $data['profile_photo_url']);
         $stmt->bindParam(':active_branch', $data['active_branch']);
@@ -57,7 +62,7 @@ class Consult {
         $stmt->bindParam(':password_hash', $data['password_hash']);
         $stmt->bindParam(':contact_time', $data['contact_time']);
         $stmt->bindParam(':fitness_goals', $data['fitness_goals']);
-        $stmt->bindParam(':referrer_id', $data['referrer_id']);
+        $stmt->bindParam(':referrer_name', $data['referrer_name']);
         $stmt->bindParam(':height', $data['height']);
         $stmt->bindParam(':weight', $data['weight']);
         $stmt->bindParam(':default_invoice_type', $data['default_invoice_type']);
@@ -69,9 +74,11 @@ class Consult {
 
         // Execute the statement
         if ($stmt->execute()) {
-            return "New record created successfully";
+            return "";
         } else {
-            return "Error: " . $stmt->error;
+            $arr = $stmt->errorInfo();
+            error_log($arr[2]);
+            return $arr[2];
         }
     }
 }

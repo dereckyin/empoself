@@ -2,7 +2,18 @@
 var app = new Vue({
     el: '#app',
     data:{
-
+      name: '',
+      gender: '',
+      birthday: '',
+      phone: '',
+      email: '',
+      address: '',
+      emergency_contact: '',
+      emergency_contact_phone: '',
+      referral_source: [],
+      referral_source_other: '',
+      health_condition: [],
+      health_condition_other: '',
     },
   
     created () {
@@ -24,20 +35,156 @@ var app = new Vue({
   
   
     methods:{
-  
-  
-    reset: function() {
-  
-  
-      this.apply_start = '';
-      this.apply_end = '';
-      this.period = 0;
-      this.leave_type = '';
-      this.reason = '';
-      this.submit = false;
-      this.getLeaveCredit();
-      this.getRecords();
-    },
-  
-  }
+      checkForm: function (e) {
+        // if (this.name && this.birthday && this.phone && this.email && this.address && this.emergency_contact && this.emergency_contact_phone && this.referral_source && this.health_condition) {
+        //   return true;
+        // }
+        if (!this.name) {
+          Swal.fire({
+            text: '請填寫姓名',
+            icon: 'warning',
+            confirmButtonText: 'OK'
+          })
+          return false;
+        }
+
+        if (!this.birthday) {
+          Swal.fire({
+            text: '請填寫生日',
+            icon: 'warning',
+            confirmButtonText: 'OK'
+          })
+          return false;
+        }
+
+        if (!this.phone) {
+          Swal.fire({
+            text: '請填寫電話',
+            icon: 'warning',
+            confirmButtonText: 'OK'
+          })
+          return false;
+        }
+
+        if (!this.email) {
+          Swal.fire({
+            text: '請填寫電子信箱',
+            icon: 'warning',
+            confirmButtonText: 'OK'
+          })
+          return false;
+        }
+
+        if (!this.address) {
+          Swal.fire({
+            text: '請填寫地址',
+            icon: 'warning',
+            confirmButtonText: 'OK'
+          })
+          return false;
+        }
+
+        if (!this.emergency_contact) {
+          Swal.fire({
+            text: '請填寫緊急聯絡人',
+            icon: 'warning',
+            confirmButtonText: 'OK'
+          })
+          return false;
+        }
+
+        if (!this.emergency_contact_phone) {
+          Swal.fire({
+            text: '請填寫緊急聯絡人電話',
+            icon: 'warning',
+            confirmButtonText: 'OK'
+          })
+          return false;
+        }
+
+
+        if (!this.health_condition && !this.health_condition_other) {
+          Swal.fire({
+            text: '請填寫健康狀況',
+            icon: 'warning',
+            confirmButtonText: 'OK'
+          })
+          return false;
+        }
+
+        return true;
+      },
+
+      nextSection: function(){
+        if(this.checkForm()){
+          document.getElementById("section1").classList.add("hidden");
+          document.getElementById("section2").classList.remove("hidden");
+        }
+      },
+
+      submitForm: function(){
+        var form_Data = new FormData();
+        let _this = this;
+
+        form_Data.append('name', this.name);
+        form_Data.append('gender', this.gender);
+        form_Data.append('birthday', this.birthday);
+        form_Data.append('phone', this.phone);
+        form_Data.append('email', this.email);
+        form_Data.append('address', this.address);
+        form_Data.append('emergency_contact', this.emergency_contact);
+        form_Data.append('emergency_contact_phone', this.emergency_contact_phone);
+        form_Data.append('referral_source', this.referral_source);
+        form_Data.append('referral_source_other', this.referral_source_other);
+        form_Data.append('health_condition', this.health_condition);
+        form_Data.append('health_condition_other', this.health_condition_other);
+
+
+        axios({
+          method: 'post',
+          headers: {
+              'Content-Type': 'multipart/form-data',
+          },
+          url: 'api/consult_add',
+          data: form_Data
+        })
+        .then(function(response) {
+            //handle success
+            Swal.fire({
+              text: JSON.stringify(response.data),
+              icon: 'success',
+              confirmButtonText: 'OK'
+            })
+
+            _this.reset();
+        })
+        .catch(function(response) {
+            //handle error
+            Swal.fire({
+              text: JSON.stringify(response.data),
+              icon: 'error',
+              confirmButtonText: 'OK'
+            })
+        });
+      },
+
+      reset: function() {
+        this.name = '';
+        this.gender = '';
+        this.birthday = '';
+        this.phone = '';
+        this.email = '';
+        this.address = '';
+        this.emergency_contact = '';
+        this.emergency_contact_phone = '';
+        this.referral_source = [];
+        this.referral_source_other = '';
+        this.health_condition = [];
+        this.health_condition_other = '';
+
+        document.getElementById("section1").classList.remove("hidden");
+        document.getElementById("section2").classList.add("hidden");
+      },
+    
+    }
   });

@@ -23,6 +23,10 @@ class Database{
  
         return $this->conn;
     }
+
+    public function close(){
+        $this->conn = null;
+    }
 }
 
 ?>
