@@ -72,7 +72,7 @@ var app = new Vue({
 
         if(must.length > 0){
           Swal.fire({
-            html: ' 請填寫以下欄位' + "<br>" + must.join('、'),
+            html: ' 請填寫以下欄位' + "<br><br>" + must.join('、'),
             confirmButtonText: 'OK'
           })
           return false;
