@@ -74,7 +74,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $result = $consult->insert($data);
         if($result == ""){
             http_response_code(200);
-            echo json_encode(array("message" => "Consult added successfully"));
+            echo json_encode(array("message" => "已加入諮詢"));
         } else {
             http_response_code(503);
             echo json_encode(array("Failure at " . date("Y-m-d") . " " . date("h:i:sa") . $result));

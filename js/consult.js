@@ -151,7 +151,7 @@ var app = new Vue({
         .then(function(response) {
             //handle success
             Swal.fire({
-              text: JSON.stringify(response.data),
+              text: response.data.message,
               icon: 'success',
               confirmButtonText: 'OK'
             })
