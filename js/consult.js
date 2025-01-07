@@ -37,6 +37,7 @@ var app = new Vue({
     methods:{
       checkForm: function (e) {
         var must = [];
+        var format = [];
 
         if (!this.name) {
           must = [...must, '姓名'];
@@ -54,6 +55,14 @@ var app = new Vue({
           must = [...must, 'Email'];
         }
 
+        if(this.email && !this.email.match(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)) {
+          format = [...format, 'Email'];
+        }
+
+        if(this.phone && !this.phone.match(/^(09|\+8869)\d{8}$/)) {
+          format = [...format, 'phone'];
+        }
+
         if (!this.address) {
           must = [...must, '地址'];
         }
@@ -66,17 +75,34 @@ var app = new Vue({
           must = [...must, '緊急聯絡人電話'];
         }
 
+
         if (this.health_condition.length == 0 && !this.health_condition_other) {
           must = [...must, '體況'];
         }
 
-        if(must.length > 0){
+        if(must.length > 0 || format.length > 0){
+          var html = '';
+
+          if(must.length > 0){
+            html = html + ' 請填寫以下欄位' + "<br><br>" + must.join('、');
+
+          if(format.length > 0)
+          {
+            if(html != ''){
+              html = html + "<br><br>";
+              html = html + '以下欄位格式錯誤' + "<br><br>" + format.join('、') + "<br><br>";
+            } else {
+              html = '以下欄位格式錯誤' + "<br><br>" + format.join('、') + "<br><br>";
+            }
+          }
+
           Swal.fire({
-            html: ' 請填寫以下欄位' + "<br><br>" + must.join('、'),
+            html: html,
             confirmButtonText: 'OK'
-          })
+          });
           return false;
         }
+      }
 
         return true;
       },
