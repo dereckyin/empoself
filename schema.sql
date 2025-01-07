@@ -1,6 +1,3 @@
-
-CREATE USER 'empoself'@'localhost' IDENTIFIED BY '1qaz@WSX';
-
 CREATE TABLE IF NOT EXISTS `consult` (
     `id` bigint(20) unsigned  COLLATE utf8mb4_unicode_ci AUTO_INCREMENT,
     `name` VARCHAR(200) COLLATE utf8mb4_unicode_ci default '',
