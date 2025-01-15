@@ -1,3 +1,32 @@
+<?php
+    $auth_token = (isset($_COOKIE['auth_token']) ? $_COOKIE['auth_token'] : null);
+
+    if(!$auth_token) {
+        $token = bin2hex(random_bytes(16)); // Generate a random token
+        $expiration = time() + (20 * 60); // Set expiration time for 20 minutes
+        
+        $ip = $_SERVER['REMOTE_ADDR']; // Get the user's IP address
+        $user_id = 0;
+        $user_agent = $_SERVER['HTTP_USER_AGENT']; // Get the user's user agent
+
+        // Set the cookie
+        setcookie("auth_token", $token, $expiration, "/", "", true, true); // Secure and HttpOnly flags
+
+        include_once 'api/config/core.php';
+        include_once 'api/objects/access_token.php';
+        include_once 'api/config/database.php';
+
+        $database = new Database();
+        $database->getConnection();
+
+        $access_token = new AccessToken($database);
+        $ret = $access_token->insert($user_id, $token, $ip, $user_agent, $expiration);
+
+        //echo $ret;
+    }
+
+    
+?>
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
@@ -34,6 +63,18 @@
 
         span.star {
             color: red;
+        }
+
+        .space-between {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .space-between button.load-data {
+            width: unset;
+            padding: 5px;
+            font-size: 13px;
+            margin: unset;
         }
 
         input, select, textarea, button {
@@ -99,6 +140,80 @@
             background-color: #45a049;
         }
 
+        .mask {
+            position: fixed;
+            background: rgba(0, 0, 0, 0.5);
+            width: 100%;
+            height: 100%;
+            top: 0;
+            z-index: 1;
+            display: none;
+        }
+
+        .popup-dialog {
+            position: fixed;
+            top: calc(50vh - 245px);
+            left: calc(50vw - 150px);
+            /* transition: left 0.3s ease; */
+            background-color: white;
+            padding: 20px 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            margin: 0 auto;
+            z-index: 2;
+            display: none;
+        }
+
+        .popup-dialog h1 {
+            margin-top: 5px;
+        }
+
+        .popup-dialog input {
+            margin-bottom: 10px;
+        }
+
+        .popup-dialog > button > span.hint-msg {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: -20px;
+            color: red;
+            font-size: 12px;
+        }
+
+        .popup-dialog .button-container {
+            display: flex;
+            justify-content: space-around;
+        }
+        .popup-dialog .button-container button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            width: 100px;
+        }
+
+        .popup-dialog .button-container button:hover {
+            background-color: #45a049;
+        }
+
+        .popup-dialog .button-container .cancel-btn {
+            padding: 10px;
+            text-align: center;
+            background-color: #F0502F;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .popup-dialog .button-container .cancel-btn:hover {
+            background-color: #FDB72F;
+        }
+
         @media screen and (max-width: 640px) {
             .container {
                 margin: 50px 25px;
@@ -107,11 +222,16 @@
     </style>
 </head>
 <body>
+    <div class="mask"></div>
+
     <div class="container" id="app">
         <!-- 第一部分 -->
         <div id="section1">
             <h1>基本資料</h1>
-            <label for="name">姓名 <span class="star">*</span></label>
+            <div class="space-between">
+                <label for="name">姓名 <span class="star">*</span></label>
+                <button class="load-data" onclick="toggle_popup();">載入資料</button>
+            </div>
             <input type="text" id="name" required v-model="name">
 
             <label for="gender">性別</label>
@@ -189,11 +309,39 @@
             <button @click="submitForm()">完成</button>
         </div>
 
-       
+        <div class="popup-dialog">
+            <h1>載入資料</h1>
+
+            <label for="birthday" v-model="pop_name">姓名</label>
+            <input type="text" id="name"required>
+            <label for="birthday">生日</label>
+            <input type="date" id="birthday" required v-model="pop_birthday">
+            <button type="button" style="position: relative;">發送驗證碼<span class="hint-msg">已發送驗證碼到「您當時填寫的Email信箱」</span></button>
+
+            <input type="text" id="verify-code" placeholder="請輸入驗證碼" required>
+
+            <div class="button-container">
+                <button class="cancel-btn" onclick="toggle_popup();">取消</button>
+                <button type="submit" @click="popup_submit()">提交</button>
+            </div>
+
+        </div>
     </div>
+
+
 </body>
 <script defer src="js/npm/vue/dist/vue.js"></script> 
 <script defer src="js/axios.min.js"></script> 
 <script defer src="js/npm/sweetalert2@9.js"></script>
 <script defer src="js/consult.js"></script>
+<script type="text/javascript" src="js/rm/jquery-3.4.1.min.js"></script>
+
+<script>
+    function toggle_popup() {
+        $(".mask").toggle();
+        $(".popup-dialog").toggle();
+    }
+
+</script>
+
 </html>

@@ -9,6 +9,37 @@ class Consult {
         $this->db = $database->conn;
     }
 
+    public function getByNameAndBirthday($name, $birthday) {
+        // Prepare the SQL statement using PDO
+        $stmt = $this->db->prepare("SELECT name, 
+                                            gender, 
+                                            birthday, 
+                                            phone, 
+                                            email, 
+                                            address, 
+                                            emergency_contact, 
+                                            emergency_contact_phone, 
+                                            referral_source, 
+                                            referral_source_other, 
+                                            health_condition, 
+                                            health_condition_other
+                                    FROM user WHERE name = :name AND birthday = :birthday");
+        
+        // Bind parameters using PDO's bindParam method
+        $stmt->bindParam(':name', $name);
+        $stmt->bindParam(':birthday', $birthday);
+        
+        // Execute the statement
+        $stmt->execute();
+        
+        // Fetch the result
+        if ($stmt->rowCount() > 0) {
+            return $stmt->fetch(PDO::FETCH_ASSOC); // Return the first matching record
+        } else {
+            return null; // No matching record found
+        }
+    } 
+
     public function insert($data) {
         $sql = "insert into user 
                 set 

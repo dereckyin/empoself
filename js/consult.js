@@ -1,4 +1,3 @@
-
 var app = new Vue({
     el: '#app',
     data:{
@@ -14,6 +13,9 @@ var app = new Vue({
       referral_source_other: '',
       health_condition: [],
       health_condition_other: '',
+
+      pop_name: '',
+      pop_birthday: '',
     },
   
     created () {
@@ -38,6 +40,17 @@ var app = new Vue({
       checkForm: function (e) {
         var must = [];
         var format = [];
+
+        this.name = this.name.trim();
+        this.birthday = this.birthday.trim();
+        this.phone = this.phone.trim();
+        this.email = this.email.trim();
+        this.address = this.address.trim();
+        this.emergency_contact = this.emergency_contact.trim();
+        this.emergency_contact_phone = this.emergency_contact_phone.trim();
+
+        this.referral_source_other = this.referral_source_other.trim();
+        this.health_condition_other = this.health_condition_other.trim();
 
         if (!this.name) {
           must = [...must, '姓名'];
@@ -107,29 +120,108 @@ var app = new Vue({
         return true;
       },
 
-      nextSection: function(){
-        if(this.checkForm()){
-          document.getElementById("section1").classList.add("hidden");
-          document.getElementById("section2").classList.remove("hidden");
+      popup_submit: async function() {
+        let _this = this;
+        var must = [];
+        if (!this.pop_name) {
+          must = [...must, '姓名'];
         }
+        if(!this.pop_birthday) {
+          must = [...must, '生日'];
+        }
+
+        if(must.length > 0){
+          Swal.fire({
+            html: '請填寫以下欄位' + "<br><br>" + must.join('、'),
+            confirmButtonText: 'OK'
+          });
+          return false;
+        }
+
+        const existingData = await this.checkExistingData(this.pop_name.trim(), this.pop_birthday.trim());
+      },
+
+      nextSection: async function() {
+        // Check for existing data with the same name and birthday
+        let _this = this;
+        if (this.checkForm()) {
+            const existingData = await this.checkExistingData(this.name.trim(), this.birthday.trim());
+            
+            if (existingData) {
+                Swal.fire({
+                    text: '您之前已經諮詢過，點擊「載入舊資料」按鈕來代入舊資料，或點擊「覆蓋舊資料」按鈕來取代舊資料並進入下一步',
+                    showDenyButton: true,
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: '載入舊資料',
+                    cancelButtonText: `覆蓋舊資料`,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                      _this.loadOldData(existingData);
+                    } else {
+                        document.getElementById("section1").classList.add("hidden");
+                        document.getElementById("section2").classList.remove("hidden");
+                    }
+                });
+            } else {
+                // Proceed to the next section if no existing data is found
+                document.getElementById("section1").classList.add("hidden");
+                document.getElementById("section2").classList.remove("hidden");
+            }
+        }
+      },
+
+      checkExistingData: async function(name, birthday) {
+        // Make an API call to fetch existing data
+        let json = null;
+        parameters = {name: name, birthday: birthday};
+
+  
+        axios
+            .get("api/consult_get", { params: parameters })
+            .then(
+            (res) => {
+              json = res.data;
+            },(err) => {
+               
+            },
+            )
+            .finally(() => {
+                return json;
+            });
+      },
+
+      loadOldData: function(data) {
+        // Load the old data into the form fields
+        this.phone = data.phone;
+        this.email = data.email;
+        this.address = data.address;
+        this.emergency_contact = data.emergency_contact || ''; // Assuming this field may not exist in old data
+        this.emergency_contact_phone = data.emergency_contact_phone || ''; // Assuming this field may not exist in old data
+        this.referral_source = data.referral_source || ''; // Assuming this field may not exist in old data
+        this.referral_source_other = data.referral_source_other || ''; // Assuming this field may not exist in old data
+        this.health_condition = data.health_condition || ''; // Assuming this field may not exist in old data
+        this.health_condition_other = data.health_condition_other || ''; // Assuming this field may not exist in old data
       },
 
       submitForm: function(){
         var form_Data = new FormData();
         let _this = this;
 
-        form_Data.append('name', this.name);
-        form_Data.append('gender', this.gender);
-        form_Data.append('birthday', this.birthday);
-        form_Data.append('phone', this.phone);
-        form_Data.append('email', this.email);
-        form_Data.append('address', this.address);
-        form_Data.append('emergency_contact', this.emergency_contact);
-        form_Data.append('emergency_contact_phone', this.emergency_contact_phone);
+        form_Data.append('name', this.name.trim());
+        form_Data.append('gender', this.gender.trim());
+        form_Data.append('birthday', this.birthday.trim());
+        form_Data.append('phone', this.phone.trim());
+        form_Data.append('email', this.email.trim());
+        form_Data.append('address', this.address.trim());
+        form_Data.append('emergency_contact', this.emergency_contact.trim());
+        form_Data.append('emergency_contact_phone', this.emergency_contact_phone.trim());
         form_Data.append('referral_source', this.referral_source);
-        form_Data.append('referral_source_other', this.referral_source_other);
+        form_Data.append('referral_source_other', this.referral_source_other.trim());
         form_Data.append('health_condition', this.health_condition);
-        form_Data.append('health_condition_other', this.health_condition_other);
+        form_Data.append('health_condition_other', this.health_condition_other.trim());
 
 
         axios({

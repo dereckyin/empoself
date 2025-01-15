@@ -38,3 +38,16 @@ CREATE TABLE IF NOT EXISTS `user` (
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE='utf8mb4_unicode_ci';
 
+CREATE TABLE IF NOT EXISTS `auth_token` (
+    `id` bigint(20) unsigned  COLLATE utf8mb4_unicode_ci AUTO_INCREMENT,
+    `user_id` bigint(20) unsigned,
+    `token` VARCHAR(255) COLLATE utf8mb4_unicode_ci default '',
+    `created_at` TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
+    `ip_address` VARCHAR(60) COLLATE utf8mb4_unicode_ci default '',
+    `user_agent` TEXT,
+    `expires_at` TIMESTAMP NULL,
+    `deleted_at` TIMESTAMP NULL,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE='utf8mb4_unicode_ci';
+
+
