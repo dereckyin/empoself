@@ -23,6 +23,7 @@ include_once 'config/core.php';
 include_once 'objects/consult.php';
 include_once 'config/database.php';
 include_once 'objects/access_token.php';
+include_once 'mail.php';
 
 // Get token from database
 $database = new Database();
@@ -52,14 +53,14 @@ if($error_count_by_ip['error_count'] > 3) {
 
 
 // Check if form is submitted
-if ($_SERVER["REQUEST_METHOD"] == "GET") {
-    $database = new Database();
-    $database->getConnection();
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
     $consult = new Consult($database);
 
+    $data = json_decode(file_get_contents('php://input'), true);
     // Get parameters from the query string
-    $name = isset($_GET['name']) ? $_GET['name'] : '';
-    $birthday = isset($_GET['birthday']) ? $_GET['birthday'] : '';
+    $name = isset($data['name']) ? $data['name'] : '';
+    $birthday = isset($data['birthday']) ? $data['birthday'] : '';
 
     // Validate input
     if (empty($name) || empty($birthday)) {
@@ -73,10 +74,12 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
         $existingData = $consult->getByNameAndBirthday($name, $birthday);
 
         if ($existingData) {
-            http_response_code(200);
-            echo json_encode($existingData);
+            $email = $existingData[0]['email'];
+            $name = $existingData[0]['name'];
+
+            send_verify_code_email($email, $name, $auth_token, $access_token);
         } else {
-            $access_token->update_error_count_by_token($auth_token);
+            $token->update_error_count_by_token($auth_token);
             http_response_code(404);
             echo json_encode(array("message" => "No data found."));
         }
@@ -91,4 +94,22 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
     // Close the database connection
     $database->close();
 }
+
+function send_verify_code_email($email, $name, $auth_token, $access_token) {
+    // generate 4 digits verify code
+    $verify_code = rand(1000, 9999);
+
+    // set verify code to token
+    $access_token->set_verify_code_by_token($auth_token, $verify_code);
+
+    // send email
+    if(send_veify_code($email, $name, $verify_code)) {
+        http_response_code(200);
+        echo json_encode(array("message" => "Verify code sent."));
+    } else {
+        http_response_code(503);
+        echo json_encode(array("message" => "Failed to send verify code."));
+    }
+}
+
 ?>

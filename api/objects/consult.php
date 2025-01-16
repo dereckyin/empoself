@@ -11,19 +11,21 @@ class Consult {
 
     public function getByNameAndBirthday($name, $birthday) {
         // Prepare the SQL statement using PDO
-        $stmt = $this->db->prepare("SELECT name, 
-                                            gender, 
-                                            birthday, 
-                                            phone, 
-                                            email, 
-                                            address, 
-                                            emergency_contact, 
-                                            emergency_contact_phone, 
-                                            referral_source, 
-                                            referral_source_other, 
-                                            health_condition, 
-                                            health_condition_other
-                                    FROM user WHERE name = :name AND birthday = :birthday");
+        $query = "SELECT `name`, 
+                        gender, 
+                        birthday, 
+                        phone, 
+                        email, 
+                        `address`, 
+                        emergency_contact, 
+                        emergency_contact_phone, 
+                        referral_source, 
+                        referral_source_other, 
+                        health_condition, 
+                        health_condition_other
+                FROM `user` WHERE `name` = :name AND `birthday` = :birthday";
+
+        $stmt = $this->db->prepare($query);
         
         // Bind parameters using PDO's bindParam method
         $stmt->bindParam(':name', $name);
@@ -32,12 +34,13 @@ class Consult {
         // Execute the statement
         $stmt->execute();
         
-        // Fetch the result
-        if ($stmt->rowCount() > 0) {
-            return $stmt->fetch(PDO::FETCH_ASSOC); // Return the first matching record
-        } else {
-            return null; // No matching record found
+        $result = [];
+
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $result[] = $row;
         }
+
+        return $result;
     } 
 
     public function insert($data) {

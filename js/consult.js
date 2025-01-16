@@ -14,8 +14,11 @@ var app = new Vue({
       health_condition: [],
       health_condition_other: '',
 
+      // for popup verify
       pop_name: '',
       pop_birthday: '',
+      verify_code: '',
+      showHint: false,
     },
   
     created () {
@@ -120,8 +123,7 @@ var app = new Vue({
         return true;
       },
 
-      popup_submit: async function() {
-        let _this = this;
+      send_verify_code: async function() {
         var must = [];
         if (!this.pop_name) {
           must = [...must, '姓名'];
@@ -138,8 +140,77 @@ var app = new Vue({
           return false;
         }
 
-        const existingData = await this.checkExistingData(this.pop_name.trim(), this.pop_birthday.trim());
+        const existingData = await this.sendVerifyCode();
+        this.showHint = true;
       },
+
+      sendVerifyCode: async function() {
+        let json = null;
+        const parameters = { name: this.pop_name.trim(), birthday: this.pop_birthday.trim() };
+
+        axios
+            .post("api/consult_send_verify_code", parameters, {
+              headers: {
+              "Content-Type": "application/json"
+              }})
+            .then((res) => {
+                json = res.data;
+                this.showHint = true;
+            })
+            .catch((err) => {
+                console.error("Error sending verification code:", err);
+            })
+            .finally(() => {
+                return json;
+            });
+      },
+
+      submit_verify_code: async function() {
+
+        let _this = this;
+        var must = [];
+        if (!this.pop_name) {
+          must = [...must, '姓名'];
+        }
+        if(!this.pop_birthday) {
+          must = [...must, '生日'];
+        }
+
+        if(!this.verify_code) {
+          must = [...must, '驗證碼'];
+        }
+
+        if(must.length > 0){
+          Swal.fire({
+            html: '請填寫以下欄位' + "<br><br>" + must.join('、'),
+            confirmButtonText: 'OK'
+          });
+          return false;
+        }
+
+        const parameters = { name: this.pop_name, birthday: this.pop_birthday, verify_code: this.verify_code };
+        
+        axios
+            .post("api/consult_verify", parameters)
+            .then((res) => {
+                if (res.data.success) {
+                    this.loadOldData(res.data.data);
+                    document.getElementById("section1").classList.add("hidden");
+                    document.getElementById("section2").classList.remove("hidden");
+                } else {
+                    Swal.fire({
+                        text: res.data.message,
+                        icon: "error",
+                        confirmButtonText: 'OK'
+                    });
+                }
+            })
+            .catch((err) => {
+                console.error("Error verifying verification code:", err);
+            }
+        );
+      },
+
 
       nextSection: async function() {
         // Check for existing data with the same name and birthday

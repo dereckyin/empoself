@@ -312,17 +312,20 @@
         <div class="popup-dialog">
             <h1>載入資料</h1>
 
-            <label for="birthday" v-model="pop_name">姓名</label>
-            <input type="text" id="name"required>
+            <label for="birthday">姓名</label>
+            <input type="text" id="name"  v-model="pop_name" required>
             <label for="birthday">生日</label>
             <input type="date" id="birthday" required v-model="pop_birthday">
-            <button type="button" style="position: relative;">發送驗證碼<span class="hint-msg">已發送驗證碼到「您當時填寫的Email信箱」</span></button>
+            <button type="button" style="position: relative;" @click="send_verify_code()">
+                發送驗證碼
+                <span class="hint-msg" v-if="showHint">已發送驗證碼到「您當時填寫的Email信箱」</span>
+            </button>
 
-            <input type="text" id="verify-code" placeholder="請輸入驗證碼" required>
+            <input type="text" id="verify-code" placeholder="請輸入驗證碼" required v-model="verify_code">
 
             <div class="button-container">
                 <button class="cancel-btn" onclick="toggle_popup();">取消</button>
-                <button type="submit" @click="popup_submit()">提交</button>
+                <button type="submit" @click="submit_verify_code()">提交</button>
             </div>
 
         </div>
