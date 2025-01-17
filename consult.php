@@ -3,7 +3,8 @@
 
     if(!$auth_token) {
         $token = bin2hex(random_bytes(16)); // Generate a random token
-        $expiration = time() + (20 * 60); // Set expiration time for 20 minutes
+        //$expiration = time() + (20 * 60); // Set expiration time for 20 minutes
+        $expiration = 0;
         
         $ip = $_SERVER['REMOTE_ADDR']; // Get the user's IP address
         $user_id = 0;
@@ -318,7 +319,7 @@
             <input type="date" id="birthday" required v-model="pop_birthday">
             <button type="button" style="position: relative;" @click="send_verify_code()" :disabled="isButtonDisabled">
                 發送驗證碼
-                <span class="hint-msg" v-if="showHint">已發送驗證碼到「您當時填寫的Email信箱」</span><span v-if="isButtonDisabled">倒數計時: {{ countdown }}秒</span>
+                <span class="hint-msg" v-if="showHint">{{ hint }}</span>
             </button>
             
             <input type="text" id="verify-code" placeholder="請輸入驗證碼" required v-model="verify_code">

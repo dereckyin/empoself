@@ -97,7 +97,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 function send_verify_code_email($email, $name, $auth_token, $access_token) {
     // generate 4 digits verify code
-    $verify_code = rand(1000, 9999);
+    $verify_code = rand(100000, 999999);
 
     // set verify code to token
     $access_token->set_verify_code_by_token($auth_token, $verify_code);

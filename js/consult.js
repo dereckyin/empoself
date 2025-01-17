@@ -21,6 +21,7 @@ var app = new Vue({
       showHint: false,
       countdown: 60, // Countdown timer in seconds
       isButtonDisabled: false, // Button state
+      hint: '已發送驗證碼到「您當時填寫的Email信箱」',
     },
   
     created () {
@@ -209,7 +210,18 @@ var app = new Vue({
                 }
             })
             .catch((err) => {
-                console.error("Error verifying verification code:", err);
+                if (err.status == 401) {
+                    _this.countdown = 0;
+                    _this.showHint = true;
+                    _this.hint = '目前無法發送驗證碼，請稍後再試';
+                }
+                
+                if (err.status == 501) {
+                    _this.countdown = 0;
+                    _this.showHint = true;
+                    _this.hint = '所填寫的資料有誤，請再次確認填寫是否正確';
+                }
+
             }
         );
       },
@@ -353,6 +365,7 @@ var app = new Vue({
 
         const interval = setInterval(() => {
           this.countdown--;
+          this.hint = "倒數計時: " + this.countdown + "秒";
 
           if (this.countdown <= 0) {
             clearInterval(interval); // Clear the interval when countdown reaches 0

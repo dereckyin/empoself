@@ -29,14 +29,18 @@ class AccessToken {
 
     public function get($token) {
         // token only valid for 20 minutes
-        $stmt = $this->db->prepare("SELECT * FROM auth_token WHERE token = :token and created_at > DATE_SUB(NOW(), INTERVAL 20 MINUTE)");
+        // valid after browser close
+        //$stmt = $this->db->prepare("SELECT * FROM auth_token WHERE token = :token and created_at > DATE_SUB(NOW(), INTERVAL 20 MINUTE)");
+        $stmt = $this->db->prepare("SELECT * FROM auth_token WHERE token = :token");
         $stmt->bindParam(':token', $token);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     public function get_error_count_by_ip($ip) {
-        $stmt = $this->db->prepare("SELECT COUNT(*) as error_count FROM auth_token WHERE ip_address = :ip_address and created_at > DATE_SUB(NOW(), INTERVAL 20 MINUTE)");
+        // valid after browser close
+        //$stmt = $this->db->prepare("SELECT COUNT(*) as error_count FROM auth_token WHERE ip_address = :ip_address and created_at > DATE_SUB(NOW(), INTERVAL 20 MINUTE)");
+        $stmt = $this->db->prepare("SELECT COUNT(*) as error_count FROM auth_token WHERE ip_address = :ip_address");
         $stmt->bindParam(':ip_address', $ip);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -53,6 +57,13 @@ class AccessToken {
         $stmt->bindParam(':token', $token);
         $stmt->bindParam(':verify_code', $verify_code);
         $stmt->execute();
+    }
+
+    public function get_verify_code_by_token($token) {
+        $stmt = $this->db->prepare("SELECT verify_code FROM auth_token WHERE token = :token");
+        $stmt->bindParam(':token', $token);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     public function update_verify_error_count_by_token($token) {
