@@ -19,6 +19,8 @@ var app = new Vue({
       pop_birthday: '',
       verify_code: '',
       showHint: false,
+      countdown: 60, // Countdown timer in seconds
+      isButtonDisabled: false, // Button state
     },
   
     created () {
@@ -141,6 +143,7 @@ var app = new Vue({
         }
 
         const existingData = await this.sendVerifyCode();
+        this.startCountdown();
         this.showHint = true;
       },
 
@@ -191,12 +194,12 @@ var app = new Vue({
         const parameters = { name: this.pop_name, birthday: this.pop_birthday, verify_code: this.verify_code };
         
         axios
-            .post("api/consult_verify", parameters)
+            .post("api/consult_verify", parameters, headers = {"Content-Type": "application/json"})
             .then((res) => {
-                if (res.data.success) {
-                    this.loadOldData(res.data.data);
-                    document.getElementById("section1").classList.add("hidden");
-                    document.getElementById("section2").classList.remove("hidden");
+                if (res.data.length > 0) {
+                    _this.loadOldData(res.data[0]);
+                    $(".mask").toggle();
+                    $(".popup-dialog").toggle();
                 } else {
                     Swal.fire({
                         text: res.data.message,
@@ -266,14 +269,17 @@ var app = new Vue({
 
       loadOldData: function(data) {
         // Load the old data into the form fields
+        this.name = data.name;
+        this.birthday = data.birthday;
+        this.gender = data.gender;
         this.phone = data.phone;
         this.email = data.email;
         this.address = data.address;
         this.emergency_contact = data.emergency_contact || ''; // Assuming this field may not exist in old data
         this.emergency_contact_phone = data.emergency_contact_phone || ''; // Assuming this field may not exist in old data
-        this.referral_source = data.referral_source || ''; // Assuming this field may not exist in old data
+        this.referral_source = data.referral_source.split(',') || []; // Assuming this field may not exist in old data
         this.referral_source_other = data.referral_source_other || ''; // Assuming this field may not exist in old data
-        this.health_condition = data.health_condition || ''; // Assuming this field may not exist in old data
+        this.health_condition = data.health_condition.split(',') || ''; // Assuming this field may not exist in old data
         this.health_condition_other = data.health_condition_other || ''; // Assuming this field may not exist in old data
       },
 
@@ -341,5 +347,18 @@ var app = new Vue({
         document.getElementById("section2").classList.add("hidden");
       },
     
+      startCountdown: function() {
+        this.isButtonDisabled = true; // Disable the button
+        this.countdown = 60; // Reset countdown to 60 seconds
+
+        const interval = setInterval(() => {
+          this.countdown--;
+
+          if (this.countdown <= 0) {
+            clearInterval(interval); // Clear the interval when countdown reaches 0
+            this.isButtonDisabled = false; // Re-enable the button
+          }
+        }, 1000); // Update every second
+      }
     }
   });

@@ -316,11 +316,11 @@
             <input type="text" id="name"  v-model="pop_name" required>
             <label for="birthday">生日</label>
             <input type="date" id="birthday" required v-model="pop_birthday">
-            <button type="button" style="position: relative;" @click="send_verify_code()">
+            <button type="button" style="position: relative;" @click="send_verify_code()" :disabled="isButtonDisabled">
                 發送驗證碼
-                <span class="hint-msg" v-if="showHint">已發送驗證碼到「您當時填寫的Email信箱」</span>
+                <span class="hint-msg" v-if="showHint">已發送驗證碼到「您當時填寫的Email信箱」</span><span v-if="isButtonDisabled">倒數計時: {{ countdown }}秒</span>
             </button>
-
+            
             <input type="text" id="verify-code" placeholder="請輸入驗證碼" required v-model="verify_code">
 
             <div class="button-container">

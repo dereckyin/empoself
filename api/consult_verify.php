@@ -52,40 +52,53 @@ if($error_count_by_ip['error_count'] > 3) {
 
 
 // Check if form is submitted
-if ($_SERVER["REQUEST_METHOD"] == "GET") {
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $consult = new Consult($database);
 
-    // Get parameters from the query string
-    $name = isset($_GET['name']) ? $_GET['name'] : '';
-    $birthday = isset($_GET['birthday']) ? $_GET['birthday'] : '';
+    $data = json_decode(file_get_contents('php://input'), true);
 
-    // Validate input
-    if (empty($name) || empty($birthday)) {
-        http_response_code(400);
-        echo json_encode(array("message" => "No data found."));
-        exit();
-    }
+    $verify_code = isset($data['verify_code']) ? $data['verify_code'] : '';
 
-    try {
-        // Fetch existing data by name and birthday
-        $existingData = $consult->getByNameAndBirthday($name, $birthday);
+    $verify_code_in_db = $access_token->get_verify_code_by_token($auth_token);
 
-        if ($existingData) {
-            http_response_code(200);
-            echo json_encode($existingData);
-        } else {
-            $access_token->update_error_count_by_token($auth_token);
-            http_response_code(404);
+    if($verify_code == $verify_code_in_db['verify_code']) {
+        // Get parameters from the query string
+        $name = isset($data['name']) ? $data['name'] : '';
+        $birthday = isset($data['birthday']) ? $data['birthday'] : '';
+
+        // Validate input
+        if (empty($name) || empty($birthday)) {
+            http_response_code(400);
             echo json_encode(array("message" => "No data found."));
+            exit();
         }
-        
-    } catch (Exception $e) {
-        error_log($e->getMessage());
-        http_response_code(501);
-        echo json_encode(array("Failure at " . date("Y-m-d") . " " . date("h:i:sa") . $e->getMessage()));
-        die();
+
+        try {
+            // Fetch existing data by name and birthday
+            $existingData = $consult->getByNameAndBirthday($name, $birthday);
+
+            if ($existingData) {
+                http_response_code(200);
+                echo json_encode($existingData);
+            } else {
+                $access_token->update_error_count_by_token($auth_token);
+                http_response_code(404);
+                echo json_encode(array("message" => "No data found."));
+            }
+            
+        } catch (Exception $e) {
+            error_log($e->getMessage());
+            http_response_code(501);
+            echo json_encode(array("Failure at " . date("Y-m-d") . " " . date("h:i:sa") . $e->getMessage()));
+            die();
+        }
+    } else {
+        $access_token->update_error_count_by_token($auth_token);
+        http_response_code(401);
+        echo json_encode(array("message" => "Access denied."));
     }
+
 
     // Close the database connection
     $database->close();
