@@ -30,6 +30,7 @@ $database->getConnection();
 $access_token = new AccessToken($database);
 $token = $access_token->get($auth_token);
 $error_count_by_ip = $access_token->get_error_count_by_ip($_SERVER['REMOTE_ADDR']);
+$verify_error_count_by_token = $access_token->get_verify_error_count_by_token($auth_token);
 
 // Check if no token is provided
 if ($token == null) {
@@ -47,6 +48,12 @@ if($token['error_count'] > 3) {
 if($error_count_by_ip['error_count'] > 3) {
     http_response_code(401);
     echo json_encode(array("message" => "Access denied."));
+    die();
+}
+
+if($verify_error_count_by_token > 3) {
+    http_response_code(401);
+    echo json_encode(array("message" => "提交失敗，請洽詢 IT 人員"));
     die();
 }
 
@@ -90,13 +97,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } catch (Exception $e) {
             error_log($e->getMessage());
             http_response_code(501);
-            echo json_encode(array("Failure at " . date("Y-m-d") . " " . date("h:i:sa") . $e->getMessage()));
+            echo json_encode(array("message" => "提交失敗，請洽詢 IT 人員"));
             die();
         }
     } else {
-        $access_token->update_error_count_by_token($auth_token);
+        $access_token->update_verify_error_count_by_token($auth_token);
         http_response_code(401);
-        echo json_encode(array("message" => "Access denied."));
+        $chance = 3 - ($verify_error_count_by_token * 1);
+        echo json_encode(array("message" => "驗證碼錯誤，您還有 " . $chance . " 次機會輸入正確的驗證碼"));
     }
 
 

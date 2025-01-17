@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS `auth_token` (
     `ip_address` VARCHAR(60) COLLATE utf8mb4_unicode_ci default '',
     `verify_code` VARCHAR(12) COLLATE utf8mb4_unicode_ci default '',
     `error_count` int(11) default 0,
-    `verify_count` int(11) default 0,
+    `verify_error_count` int(11) default 0,
     `user_agent` TEXT,
     `expires_at` TIMESTAMP NULL,
     `deleted_at` TIMESTAMP NULL,

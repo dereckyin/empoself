@@ -67,9 +67,21 @@ class AccessToken {
     }
 
     public function update_verify_error_count_by_token($token) {
-        $stmt = $this->db->prepare("UPDATE auth_token SET verify_count = verify_count + 1 WHERE token = :token");
+        $stmt = $this->db->prepare("UPDATE auth_token SET verify_error_count = verify_error_count + 1 WHERE token = :token");
         $stmt->bindParam(':token', $token);
         $stmt->execute();
+    }
+
+    public function get_verify_error_count_by_token($token) {
+        $ret = 0;
+        $stmt = $this->db->prepare("SELECT verify_error_count FROM auth_token WHERE token = :token");
+        $stmt->bindParam(':token', $token);
+        $stmt->execute();
+        // return as number
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $ret = $row['verify_error_count'] * 1;
+        }
+        return $ret;
     }
 }
 ?>

@@ -213,13 +213,13 @@ var app = new Vue({
                 if (err.status == 401) {
                     _this.countdown = 0;
                     _this.showHint = true;
-                    _this.hint = '目前無法發送驗證碼，請稍後再試';
+                    _this.hint = err.data.message;
                 }
                 
                 if (err.status == 501) {
                     _this.countdown = 0;
                     _this.showHint = true;
-                    _this.hint = '所填寫的資料有誤，請再次確認填寫是否正確';
+                    _this.hint = err.data.message;
                 }
 
             }
@@ -365,7 +365,7 @@ var app = new Vue({
 
         const interval = setInterval(() => {
           this.countdown--;
-          this.hint = "倒數計時: " + this.countdown + "秒";
+          //this.hint = "倒數計時: " + this.countdown + "秒";
 
           if (this.countdown <= 0) {
             clearInterval(interval); // Clear the interval when countdown reaches 0
