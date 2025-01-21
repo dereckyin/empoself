@@ -106,7 +106,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         http_response_code(401);
         $chance = 2 - ($verify_error_count_by_token * 1);
         if($chance <= 0) {
-            echo json_encode(array("message" => "驗證碼錯誤，您已無法再輸入正確的驗證碼"));
+            echo json_encode(array("message" => "提交失敗，請洽詢 IT 人員"));
         }
         else
         {
