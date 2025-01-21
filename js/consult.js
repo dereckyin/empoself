@@ -22,6 +22,7 @@ var app = new Vue({
       countdown: 60, // Countdown timer in seconds
       isButtonDisabled: false, // Button state
       hint: '已發送驗證碼到「您當時填寫的Email信箱」',
+      verified: false,
     },
   
     created () {
@@ -201,6 +202,7 @@ var app = new Vue({
                     _this.loadOldData(res.data[0]);
                     $(".mask").toggle();
                     $(".popup-dialog").toggle();
+                    _this.verified = true;
                 } else {
                     Swal.fire({
                         text: res.data.message,
@@ -233,26 +235,13 @@ var app = new Vue({
         if (this.checkForm()) {
             const existingData = await this.checkExistingData(this.name.trim(), this.birthday.trim());
             
-            if (existingData) {
-                Swal.fire({
-                    text: '您之前已經諮詢過，點擊「載入舊資料」按鈕來代入舊資料，或點擊「覆蓋舊資料」按鈕來取代舊資料並進入下一步',
-                    showDenyButton: true,
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: '載入舊資料',
-                    cancelButtonText: `覆蓋舊資料`,
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                      _this.loadOldData(existingData);
-                    } else {
-                        document.getElementById("section1").classList.add("hidden");
-                        document.getElementById("section2").classList.remove("hidden");
-                    }
-                });
-            } else {
-                // Proceed to the next section if no existing data is found
+            if (existingData && this.verified == false) {
+              Swal.fire({
+                text: '您之前已經諮詢過，點擊「載入資料」按鈕來代入舊資料',
+                icon: "warning",
+                confirmButtonText: 'OK'
+              });
+            } else if (existingData && this.verified == true) {
                 document.getElementById("section1").classList.add("hidden");
                 document.getElementById("section2").classList.remove("hidden");
             }
@@ -261,21 +250,17 @@ var app = new Vue({
 
       checkExistingData: async function(name, birthday) {
         // Make an API call to fetch existing data
-        let json = null;
+        let json = "";
         parameters = {name: name, birthday: birthday};
 
-        await axios
-            .get("api/consult_get", { params: parameters })
-            .then(
-            (res) => {
-              json = res.data;
-            },(err) => {
-              json = res.data;
-            },
-            )
-            .finally(() => {
-                return json;
-            });
+        let ret = await axios({ method: 'get', url: 'api/consult_get', params: parameters });
+
+        if (ret.data.length > 0) {
+            json = ret.data[0];
+        }
+
+        return json;
+
       },
 
       loadOldData: function(data) {
@@ -298,6 +283,10 @@ var app = new Vue({
         var form_Data = new FormData();
         let _this = this;
 
+        var url = 'api/consult_add';
+        if(this.verified)
+          url = 'api/consult_update';
+
         form_Data.append('name', this.name.trim());
         form_Data.append('gender', this.gender.trim());
         form_Data.append('birthday', this.birthday.trim());
@@ -317,7 +306,7 @@ var app = new Vue({
           headers: {
               'Content-Type': 'multipart/form-data',
           },
-          url: 'api/consult_add',
+          url: url,
           data: form_Data
         })
         .then(function(response) {
