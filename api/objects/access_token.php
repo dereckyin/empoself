@@ -40,7 +40,7 @@ class AccessToken {
     public function get_error_count_by_ip($ip) {
         // valid after browser close
         //$stmt = $this->db->prepare("SELECT COUNT(*) as error_count FROM auth_token WHERE ip_address = :ip_address and created_at > DATE_SUB(NOW(), INTERVAL 20 MINUTE)");
-        $stmt = $this->db->prepare("SELECT COUNT(*) as error_count FROM auth_token WHERE ip_address = :ip_address");
+        $stmt = $this->db->prepare("SELECT sum(error_count) as error_count FROM auth_token WHERE ip_address = :ip_address");
         $stmt->bindParam(':ip_address', $ip);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);

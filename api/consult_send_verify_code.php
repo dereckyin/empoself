@@ -35,19 +35,19 @@ $error_count_by_ip = $access_token->get_error_count_by_ip($_SERVER['REMOTE_ADDR'
 // Check if no token is provided
 if ($token == null) {
     http_response_code(501);
-    echo json_encode(array("message" => "Access denied."));
+    echo json_encode(array("message" => "Access denied1."));
     die();
 }
 
 if($token['error_count'] > 3) {
     http_response_code(501);
-    echo json_encode(array("message" => "Access denied."));
+    echo json_encode(array("message" => "Access denied2."));
     die();
 }
 
 if($error_count_by_ip['error_count'] > 3) {
     http_response_code(501);
-    echo json_encode(array("message" => "Access denied."));
+    echo json_encode(array("message" => "Access denied3."));
     die();
 }
 
