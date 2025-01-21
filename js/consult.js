@@ -80,7 +80,7 @@ var app = new Vue({
         }
 
         if(this.phone && !this.phone.match(/^(09|\+8869)\d{8}$/)) {
-          format = [...format, 'phone'];
+          format = [...format, '手機號碼'];
         }
 
         if (!this.address) {

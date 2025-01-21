@@ -36,7 +36,7 @@ function send_veify_code($email, $name, $token)
     $mail->Subject = "[EmpoSelf Verification]";
     $content =  "<p>Dear " . $name . ",</p>";
     $content = $content . "<p>Your verify code is: " . $token . "</p>";
-    $content = $content . "Please use this code to verify your email address.";
+    $content = $content . "Please use this code to verify your data retrieval.";
 
 
     $mail->MsgHTML($content);
