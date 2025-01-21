@@ -245,6 +245,11 @@ var app = new Vue({
                 document.getElementById("section1").classList.add("hidden");
                 document.getElementById("section2").classList.remove("hidden");
             }
+            else 
+            {
+              document.getElementById("section1").classList.add("hidden");
+              document.getElementById("section2").classList.remove("hidden");
+            }
         }
       },
 
@@ -253,12 +258,16 @@ var app = new Vue({
         let json = "";
         parameters = {name: name, birthday: birthday};
 
-        let ret = await axios({ method: 'get', url: 'api/consult_get', params: parameters });
+        try {
+          let ret = await axios({ method: 'get', url: 'api/consult_get', params: parameters });
 
-        if (ret.data.length > 0) {
-            json = ret.data[0];
+          if (ret.data.length > 0) {
+              json = ret.data[0];
+          }
+        } catch (error) {
+
         }
-
+        
         return json;
 
       },
