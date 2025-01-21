@@ -264,8 +264,7 @@ var app = new Vue({
         let json = null;
         parameters = {name: name, birthday: birthday};
 
-  
-        axios
+        await axios
             .get("api/consult_get", { params: parameters })
             .then(
             (res) => {
