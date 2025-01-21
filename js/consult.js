@@ -271,7 +271,7 @@ var app = new Vue({
             (res) => {
               json = res.data;
             },(err) => {
-               
+              json = res.data;
             },
             )
             .finally(() => {
