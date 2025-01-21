@@ -4,7 +4,7 @@
     if(!$auth_token) {
         $token = bin2hex(random_bytes(16)); // Generate a random token
         //$expiration = time() + (20 * 60); // Set expiration time for 20 minutes
-        //$expiration = 0;
+        $expiration = 0;
         
         $ip = $_SERVER['REMOTE_ADDR']; // Get the user's IP address
         $user_id = 0;
