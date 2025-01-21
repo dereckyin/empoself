@@ -83,5 +83,11 @@ class AccessToken {
         }
         return $ret;
     }
+
+    public function clear_error($token) {
+        $stmt = $this->db->prepare("UPDATE auth_token SET error_count = 0, verify_error_count = 0 WHERE token = :token");
+        $stmt->bindParam(':token', $token);
+        $stmt->execute();
+    }
 }
 ?>
