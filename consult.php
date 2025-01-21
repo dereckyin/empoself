@@ -318,7 +318,7 @@
             <label for="birthday">生日</label>
             <input type="date" id="birthday" required v-model="pop_birthday">
             <button type="button" style="position: relative;" @click="send_verify_code()" :disabled="isButtonDisabled">
-                發送驗證碼
+                {{ button_text }}
                 <span class="hint-msg" v-if="showHint">{{ hint }}</span>
             </button>
             

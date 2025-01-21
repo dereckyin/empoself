@@ -21,8 +21,9 @@ var app = new Vue({
       showHint: false,
       countdown: 60, // Countdown timer in seconds
       isButtonDisabled: false, // Button state
-      hint: '已發送驗證碼到「您當時填寫的Email信箱」',
+      hint: '',
       verified: false,
+      button_text : '發送驗證碼',
     },
   
     created () {
@@ -138,7 +139,7 @@ var app = new Vue({
 
         if(must.length > 0){
           Swal.fire({
-            html: '請填寫以下欄位' + "<br><br>" + must.join('、'),
+            html: '”請輸入「姓名」和「生日」',
             confirmButtonText: 'OK'
           });
           return false;
@@ -151,19 +152,29 @@ var app = new Vue({
 
       sendVerifyCode: async function() {
         let json = null;
+        let _this = this;
         const parameters = { name: this.pop_name.trim(), birthday: this.pop_birthday.trim() };
 
-        axios
+        let ret = await axios
             .post("api/consult_send_verify_code", parameters, {
               headers: {
               "Content-Type": "application/json"
               }})
             .then((res) => {
                 json = res.data;
-                this.showHint = true;
+                _this.showHint = true;
+                _this.hint = "已發送驗證碼到「" + json.message +  "」";
             })
             .catch((err) => {
-                console.error("Error sending verification code:", err);
+              if (err.status == 401) {
+                _this.showHint = true;
+                _this.hint = "所填寫的資料有誤，請再次確認填寫是否正確";
+            }
+            
+            if (err.status == 501) {
+                _this.showHint = true;
+                _this.hint = "目前無法發送驗證碼，請稍後再試";
+            }
             })
             .finally(() => {
                 return json;
@@ -213,13 +224,13 @@ var app = new Vue({
             })
             .catch((err) => {
                 if (err.status == 401) {
-                    _this.countdown = 0;
+
                     _this.showHint = true;
                     _this.hint = err.data.message;
                 }
                 
                 if (err.status == 501) {
-                    _this.countdown = 0;
+
                     _this.showHint = true;
                     _this.hint = err.data.message;
                 }
@@ -362,11 +373,13 @@ var app = new Vue({
 
         const interval = setInterval(() => {
           this.countdown--;
-          //this.hint = "倒數計時: " + this.countdown + "秒";
+          this.button_text = "發送驗證碼 ... " + this.countdown + "秒";
 
           if (this.countdown <= 0) {
             clearInterval(interval); // Clear the interval when countdown reaches 0
             this.isButtonDisabled = false; // Re-enable the button
+
+            this.button_text = "發送驗證碼"; // Reset the button text
           }
         }, 1000); // Update every second
       }

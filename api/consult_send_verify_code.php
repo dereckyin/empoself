@@ -34,19 +34,19 @@ $error_count_by_ip = $access_token->get_error_count_by_ip($_SERVER['REMOTE_ADDR'
 
 // Check if no token is provided
 if ($token == null) {
-    http_response_code(401);
+    http_response_code(501);
     echo json_encode(array("message" => "Access denied."));
     die();
 }
 
 if($token['error_count'] > 3) {
-    http_response_code(401);
+    http_response_code(501);
     echo json_encode(array("message" => "Access denied."));
     die();
 }
 
 if($error_count_by_ip['error_count'] > 3) {
-    http_response_code(401);
+    http_response_code(501);
     echo json_encode(array("message" => "Access denied."));
     die();
 }
@@ -78,9 +78,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $name = $existingData[0]['name'];
 
             send_verify_code_email($email, $name, $auth_token, $access_token);
+            echo json_encode(array("message" => $email));
         } else {
-            $token->update_error_count_by_token($auth_token);
-            http_response_code(404);
+            $access_token->update_error_count_by_token($auth_token);
+            http_response_code(401);
             echo json_encode(array("message" => "No data found."));
         }
         
@@ -104,11 +105,11 @@ function send_verify_code_email($email, $name, $auth_token, $access_token) {
 
     // send email
     if(send_veify_code($email, $name, $verify_code)) {
-        http_response_code(200);
-        echo json_encode(array("message" => "Verify code sent."));
+        //http_response_code(200);
+        //echo json_encode(array("message" => "Verify code sent."));
     } else {
-        http_response_code(503);
-        echo json_encode(array("message" => "Failed to send verify code."));
+        //http_response_code(503);
+        //echo json_encode(array("message" => "Failed to send verify code."));
     }
 }
 
