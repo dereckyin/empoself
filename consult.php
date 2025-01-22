@@ -344,6 +344,10 @@
     function toggle_popup() {
         $(".mask").toggle();
         $(".popup-dialog").toggle();
+        app.pop_name = "";
+        app.pop_birthday = "";
+        app.verify_code = "";
+        app.hint = "";
     }
 
 </script>

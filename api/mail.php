@@ -28,15 +28,15 @@ function send_veify_code($email, $name, $token)
 
     $mail->IsHTML(true);
 
-    $mail->SetFrom("feliix.it@gmail.com", "Feliix.System");
-    $mail->AddReplyTo("feliix.it@gmail.com", "Feliix.System");
+    $mail->SetFrom("feliix.it@gmail.com", "把力量還給你");
+    $mail->AddReplyTo("feliix.it@gmail.com", "把力量還給你");
 
     $mail->AddAddress($email, $name);
 
-    $mail->Subject = "[EmpoSelf Verification]";
-    $content =  "<p>Dear " . $name . ",</p>";
-    $content = $content . "<p>Your verify code is: " . $token . "</p>";
-    $content = $content . "Please use this code to verify your data retrieval.";
+    $mail->Subject = "[把力量還給你] 載入資料的驗證碼";
+    $content =  "<p>您好 " . $name . ",</p>";
+    $content = $content . "<p>「載入資料」的驗證碼:  " . $token . "</p>";
+    $content = $content . "請使用這個驗證碼進行「載入資料」的驗證，謝謝";
 
 
     $mail->MsgHTML($content);

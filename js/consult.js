@@ -85,7 +85,7 @@ var app = new Vue({
         }
 
         if (!this.address) {
-          must = [...must, '地址'];
+          must = [...must, '住址'];
         }
 
         if (!this.emergency_contact) {
@@ -138,10 +138,8 @@ var app = new Vue({
         }
 
         if(must.length > 0){
-          Swal.fire({
-            html: '”請輸入「姓名」和「生日」',
-            confirmButtonText: 'OK'
-          });
+          this.hint = '請輸入「姓名」和「生日」';
+          this.showHint = true;
           return false;
         }
 
@@ -197,10 +195,9 @@ var app = new Vue({
         }
 
         if(must.length > 0){
-          Swal.fire({
-            html: '請填寫以下欄位' + "<br><br>" + must.join('、'),
-            confirmButtonText: 'OK'
-          });
+
+          this.hint = '請填寫以下欄位:' + " " + must.join('、');
+          this.showHint = true;
           return false;
         }
 
@@ -380,6 +377,7 @@ var app = new Vue({
             this.isButtonDisabled = false; // Re-enable the button
 
             this.button_text = "發送驗證碼"; // Reset the button text
+            this.hint = "";
           }
         }, 1000); // Update every second
       }
