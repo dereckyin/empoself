@@ -164,6 +164,7 @@
             margin: 0 auto;
             z-index: 2;
             display: none;
+            box-sizing: border-box;
         }
 
         .popup-dialog h1 {
@@ -178,7 +179,7 @@
             position: absolute;
             left: 0;
             right: 0;
-            bottom: -20px;
+            top: 40px;
             color: red;
             font-size: 12px;
         }
@@ -317,7 +318,7 @@
             <input type="text" id="name"  v-model="pop_name" required>
             <label for="birthday">生日</label>
             <input type="date" id="birthday" required v-model="pop_birthday">
-            <button type="button" style="position: relative;" @click="send_verify_code()" :disabled="isButtonDisabled">
+            <button type="button" style="position: relative; margin-bottom: 35px;" @click="send_verify_code()" :disabled="isButtonDisabled">
                 {{ button_text }}
                 <span class="hint-msg" v-if="showHint">{{ hint }}</span>
             </button>
