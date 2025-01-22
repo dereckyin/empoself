@@ -195,8 +195,9 @@ var app = new Vue({
         }
 
         if(must.length > 0){
-
-          this.hint = '請填寫以下欄位:' + " " + must.join('、');
+          var html = must.join('」、「');
+          html = "請填寫以下欄位: 「" + html + "」";
+          this.hint = html;
           this.showHint = true;
           return false;
         }
