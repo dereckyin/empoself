@@ -89,5 +89,11 @@ class AccessToken {
         $stmt->bindParam(':token', $token);
         $stmt->execute();
     }
+
+    public function clear_error_by_ip($ip) {
+        $stmt = $this->db->prepare("UPDATE auth_token SET error_count = 0, verify_error_count = 0 WHERE ip_address = :ip_address");
+        $stmt->bindParam(':ip_address', $ip);
+        $stmt->execute();
+    }
 }
 ?>

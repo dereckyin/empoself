@@ -88,6 +88,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if ($existingData) {
                 http_response_code(200);
                 $access_token->clear_error($auth_token);
+                $access_token->clear_error_by_ip($_SERVER['REMOTE_ADDR']);
+                
                 echo json_encode($existingData);
             } else {
                 $access_token->update_error_count_by_token($auth_token);
