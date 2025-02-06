@@ -1,3 +1,33 @@
+<?php
+    $auth_token = (isset($_COOKIE['auth_token']) ? $_COOKIE['auth_token'] : null);
+
+    if(!$auth_token) {
+        $token = bin2hex(random_bytes(16)); // Generate a random token
+        //$expiration = time() + (20 * 60); // Set expiration time for 20 minutes
+        $expiration = 0;
+        
+        $ip = $_SERVER['REMOTE_ADDR']; // Get the user's IP address
+        $user_id = 0;
+        $user_agent = $_SERVER['HTTP_USER_AGENT']; // Get the user's user agent
+
+        // Set the cookie
+        setcookie("auth_token", $token, $expiration, "/", "", true, true); // Secure and HttpOnly flags
+
+        include_once 'api/config/core.php';
+        include_once 'api/objects/access_token.php';
+        include_once 'api/config/database.php';
+
+        $database = new Database();
+        $database->getConnection();
+
+        $access_token = new AccessToken($database);
+        $ret = $access_token->insert($user_id, $token, $ip, $user_agent);
+
+        //echo $ret;
+    }
+
+    
+?>
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
