@@ -26,6 +26,8 @@ var app = new Vue({
          isButtonDisabled: false, // Button state
 
          button_text : '發送驗證碼',
+
+         is_submit: false,
        }
   },
 
@@ -58,9 +60,16 @@ var app = new Vue({
         return false;
       }
 
+      if(this.is_submit)
+        return false;
+
+      this.is_submit = true;
+
       const existingData = await this.sendVerifyCode();
       this.startCountdown();
       this.showHint = true;
+
+      this.is_submit = false;
     },
 
     sendVerifyCode: async function() {
@@ -189,13 +198,10 @@ var app = new Vue({
         }
       }
 
-      if(must.length > 0){
-        var html = must.join('」、「');
-        html = "「" + html + "」";
-        this.submit_hint = html;
-        this.showSubmitHint = true;
+      if(this.is_submit)
         return false;
-      }
+
+      this.is_submit = true;
 
       const parameters = { name: this.name, birthday: this.birthday, verify_code: this.verify_code, new_password: this.new_password, confirm_password: this.confirm_password, recaptcha_response: recaptcha.value };
       
@@ -237,7 +243,9 @@ var app = new Vue({
               }
 
           }
-      );
+      ).finally(() => {
+          _this.is_submit = false;
+      });
     },
 
     startCountdown: function() {

@@ -24,6 +24,8 @@ var app = new Vue({
       hint: '',
       verified: false,
       button_text : '發送驗證碼',
+
+      is_submit: false,
     },
   
     created () {
@@ -143,9 +145,16 @@ var app = new Vue({
           return false;
         }
 
+        if(this.is_submit)
+          return false;
+  
+        this.is_submit = true;
+
         const existingData = await this.sendVerifyCode();
         this.startCountdown();
         this.showHint = true;
+
+        this.is_submit = false;
       },
 
       sendVerifyCode: async function() {
@@ -202,9 +211,14 @@ var app = new Vue({
           return false;
         }
 
+        if(this.is_submit)
+          return false;
+
+        this.is_submit = true;
+
         const parameters = { name: this.pop_name, birthday: this.pop_birthday, verify_code: this.verify_code };
         
-        axios
+        await axios
             .post("api/consult_verify", parameters, headers = {"Content-Type": "application/json"})
             .then((res) => {
                 if (res.data.length > 0) {
@@ -234,7 +248,10 @@ var app = new Vue({
                 }
 
             }
-        );
+        ).finally(() => {
+            _this.is_submit = false;
+        });
+        
       },
 
 
