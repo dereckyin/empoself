@@ -99,7 +99,7 @@ if($user_exists && password_verify($password, $user->password_hash)  && $user->a
     echo json_encode(
             array(
                 "message" => "Successful login.",
-                "jwt" => passport_encrypt($jwt),
+                "jwt" => $jwt,
                 "uid" => passport_encrypt(base64_encode($user->id))
             )
         );

@@ -13,9 +13,9 @@ include_once 'api/libs/php-jwt-master/src/JWT.php';
 use \Firebase\JWT\JWT;
 
 try {
-        $decrypted = passport_decrypt($jwt);
+        //$decrypted = passport_decrypt($jwt);
         // decode jwt
-        $decoded = JWT::decode($decrypted, $key, array('HS256'));
+        $decoded = JWT::decode($jwt, $key, array('HS256'));
 
         $GLOBALS['username'] = $decoded->data->username;
         // $GLOBALS['position'] = $decoded->data->position;
