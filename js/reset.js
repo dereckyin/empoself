@@ -89,7 +89,7 @@ var app = new Vue({
       const parameters = { name: this.name.trim(), birthday: this.birthday.trim() };
 
       let ret = await axios
-          .post("api/consult_send_verify_code", parameters, {
+          .post("api/reset_send_verify_code", parameters, {
             headers: {
             "Content-Type": "application/json"
             }})

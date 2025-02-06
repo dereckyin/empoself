@@ -14,6 +14,44 @@ include_once 'config/database.php';
 
 
 
+function send_reset_veify_code($email, $name, $token)
+{
+    $conf = new Conf();
+
+    $mail = new PHPMailer();
+    $mail->IsSMTP();
+    $mail->Mailer = "smtp";
+    $mail->CharSet = 'UTF-8';
+    $mail->Encoding = 'base64';
+
+    $mail = SetupMail($mail, $conf);
+
+    $mail->IsHTML(true);
+
+    $mail->SetFrom("feliix.it@gmail.com", "把力量還給你");
+    $mail->AddReplyTo("feliix.it@gmail.com", "把力量還給你");
+
+    $mail->AddAddress($email, $name);
+
+    $mail->Subject = "[把力量還給你] 載入資料的驗證碼";
+    $content =  "<p>您好 " . $name . ",</p>";
+    $content = $content . "<p>「重設密碼」的驗證碼:  " . $token . "</p>";
+    $content = $content . "請使用這個驗證碼進行「載入資料」的驗證，謝謝";
+
+
+    $mail->MsgHTML($content);
+    if($mail->Send()) {
+
+        return true;
+//        echo "Error while sending Email.";
+//        var_dump($mail);
+    } else {
+
+        return false;
+//        echo "Email sent successfully";
+    }
+}
+
 function send_veify_code($email, $name, $token)
 {
     $conf = new Conf();
