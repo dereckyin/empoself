@@ -291,6 +291,7 @@
             </div>
 
             <button @click="nextSection()">下一步</button>
+            
         </div>
 
         <!-- 第二部分 -->
@@ -327,7 +328,12 @@
 
             <div class="button-container">
                 <button class="cancel-btn" onclick="toggle_popup();">取消</button>
-                <button type="submit" @click="submit_verify_code()">提交</button>
+
+                <button type="submit" style="position: relative;" class="g-recaptcha" 
+                                                                    data-sitekey='6LdWV8AqAAAAADF7umMs-HirSiyCAg5QmpU-G3mi'
+                                                                    data-callback='onSubmit' 
+                                                                    data-action='submit'>提交</button>
+
             </div>
 
         </div>
@@ -340,8 +346,14 @@
 <script defer src="js/npm/sweetalert2@9.js"></script>
 <script defer src="js/consult.js"></script>
 <script type="text/javascript" src="js/rm/jquery-3.4.1.min.js"></script>
+<script src="https://www.google.com/recaptcha/api.js"></script>
 
 <script>
+    function onSubmit(token) {
+     document.getElementById("recaptchaResponse").value = token;
+        app.submit_verify_code();
+   }
+
     function toggle_popup() {
         $(".mask").toggle();
         $(".popup-dialog").toggle();

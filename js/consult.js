@@ -222,7 +222,9 @@ var app = new Vue({
 
         this.is_submit = true;
 
-        const parameters = { name: this.pop_name, birthday: this.pop_birthday, verify_code: this.verify_code };
+        var recaptcha = document.getElementById('recaptchaResponse');
+
+        const parameters = { name: this.pop_name, birthday: this.pop_birthday, verify_code: this.verify_code, recaptcha_response: recaptcha.value };
         
         await axios
             .post("api/consult_verify", parameters, headers = {"Content-Type": "application/json"})
