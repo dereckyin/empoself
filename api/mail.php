@@ -33,10 +33,10 @@ function send_reset_veify_code($email, $name, $token)
 
     $mail->AddAddress($email, $name);
 
-    $mail->Subject = "[把力量還給你] 載入資料的驗證碼";
+    $mail->Subject = "[把力量還給你] 重設密碼的驗證碼";
     $content =  "<p>您好 " . $name . ",</p>";
     $content = $content . "<p>「重設密碼」的驗證碼:  " . $token . "</p>";
-    $content = $content . "請使用這個驗證碼進行「載入資料」的驗證，謝謝";
+    $content = $content . "請使用這個驗證碼進行「重設密碼」的驗證，謝謝";
 
 
     $mail->MsgHTML($content);

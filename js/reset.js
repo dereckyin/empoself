@@ -96,7 +96,7 @@ var app = new Vue({
           .then((res) => {
               json = res.data;
               _this.showHint = true;
-              _this.hint = "已發送驗證碼到「" + json.message +  "」";
+              _this.hint = "已發送驗證碼";
           })
           .catch((err) => {
             if (err.status == 401) {

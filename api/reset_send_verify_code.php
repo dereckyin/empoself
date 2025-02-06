@@ -80,7 +80,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             send_verify_code_email($email, $name, $auth_token, $access_token);
             echo json_encode(array("message" => $email));
         } else {
-            $access_token->update_error_count_by_token($auth_token);
+            $access_token->update_reset_error_count_by_token($auth_token);
             http_response_code(401);
             echo json_encode(array("message" => "No data found."));
         }
@@ -104,7 +104,7 @@ function send_verify_code_email($email, $name, $auth_token, $access_token) {
     $access_token->set_verify_code_by_token($auth_token, $verify_code);
 
     // send email
-    if(send_veify_code($email, $name, $verify_code)) {
+    if(send_reset_veify_code($email, $name, $verify_code)) {
         //http_response_code(200);
         //echo json_encode(array("message" => "Verify code sent."));
     } else {
