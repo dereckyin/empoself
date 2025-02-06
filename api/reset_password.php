@@ -30,8 +30,8 @@ $database->getConnection();
 $access_token = new AccessToken($database);
 $conf = new Conf();
 $token = $access_token->get($auth_token);
-$error_count_by_ip = $access_token->get_error_count_by_ip($_SERVER['REMOTE_ADDR']);
-$verify_error_count_by_token = $access_token->get_verify_error_count_by_token($auth_token);
+$error_count_by_ip = $access_token->get_reset_error_count_by_ip($_SERVER['REMOTE_ADDR']);
+$verify_error_count_by_token = $access_token->get_reset_verify_error_count_by_token($auth_token);
 
 // Check if no token is provided
 if ($token == null) {
@@ -40,13 +40,13 @@ if ($token == null) {
     die();
 }
 
-if($token['error_count'] > 3) {
+if($token['reset_error_count'] > 3) {
     http_response_code(401);
     echo json_encode(array("message" => "Access denied."));
     die();
 }
 
-if($error_count_by_ip['error_count'] > 3) {
+if($error_count_by_ip['reset_error_count'] > 3) {
     http_response_code(401);
     echo json_encode(array("message" => "Access denied."));
     die();
@@ -130,7 +130,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 
                 echo json_encode($existingData);
             } else {
-                $access_token->update_error_count_by_token($auth_token);
+                $access_token->update_reset_error_count_by_token($auth_token);
                 http_response_code(404);
                 echo json_encode(array("message" => "No data found."));
             }
@@ -142,7 +142,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             die();
         }
     } else {
-        $access_token->update_verify_error_count_by_token($auth_token);
+        $access_token->update_reset_verify_error_count_by_token($auth_token);
         http_response_code(401);
         $chance = 2 - ($verify_error_count_by_token * 1);
         if($chance <= 0) {

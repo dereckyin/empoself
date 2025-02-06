@@ -63,4 +63,9 @@ CREATE TABLE IF NOT EXISTS `login_history` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='utf8mb4_unicode_ci';
 
+-- 20250206
+ALTER TABLE auth_token
+ADD COLUMN `reset_error_count` int(11) default 0;
 
+ALTER TABLE auth_token
+ADD COLUMN `reset_verify_error_count` int(11) default 0;

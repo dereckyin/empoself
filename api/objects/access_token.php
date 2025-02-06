@@ -95,5 +95,60 @@ class AccessToken {
         $stmt->bindParam(':ip_address', $ip);
         $stmt->execute();
     }
+
+    public function update_reset_error_count_by_token($token) {
+        $stmt = $this->db->prepare("UPDATE auth_token SET reset_error_count = reset_error_count + 1 WHERE token = :token");
+        $stmt->bindParam(':token', $token);
+        $stmt->execute();
+    }
+
+    public function update_reset_verify_error_count_by_token($token) {
+        $stmt = $this->db->prepare("UPDATE auth_token SET reset_verify_error_count = reset_verify_error_count + 1 WHERE token = :token");
+        $stmt->bindParam(':token', $token);
+        $stmt->execute();
+    }
+
+    public function clear_reset_error($token) {
+        $stmt = $this->db->prepare("UPDATE auth_token SET reset_error_count = 0, reset_verify_error_count = 0 WHERE token = :token");
+        $stmt->bindParam(':token', $token);
+        $stmt->execute();
+    }
+
+    public function clear_reset_error_by_ip($ip) {
+        $stmt = $this->db->prepare("UPDATE auth_token SET reset_error_count = 0, reset_verify_error_count = 0 WHERE ip_address = :ip_address");
+        $stmt->bindParam(':ip_address', $ip);
+        $stmt->execute();
+    }
+
+    public function get_reset_error_count_by_ip($ip) {
+        // valid after browser close
+        //$stmt = $this->db->prepare("SELECT COUNT(*) as error_count FROM auth_token WHERE ip_address = :ip_address and created_at > DATE_SUB(NOW(), INTERVAL 20 MINUTE)");
+        $stmt = $this->db->prepare("SELECT sum(reset_error_count) as reset_error_count FROM auth_token WHERE ip_address = :ip_address");
+        $stmt->bindParam(':ip_address', $ip);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function get_reset_verify_error_count_by_ip($ip) {
+        // valid after browser close
+        //$stmt = $this->db->prepare("SELECT COUNT(*) as error_count FROM auth_token WHERE ip_address = :ip_address and created_at > DATE_SUB(NOW(), INTERVAL 20 MINUTE)");
+        $stmt = $this->db->prepare("SELECT sum(reset_verify_error_count) as reset_verify_error_count FROM auth_token WHERE ip_address = :ip_address");
+        $stmt->bindParam(':ip_address', $ip);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function get_reset_verify_error_count_by_token($token) {
+        $ret = 0;
+        $stmt = $this->db->prepare("SELECT reset_verify_error_count FROM auth_token WHERE token = :token");
+        $stmt->bindParam(':token', $token);
+        $stmt->execute();
+        // return as number
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $ret = $row['reset_verify_error_count'] * 1;
+        }
+        return $ret;
+    }
+
 }
 ?>
