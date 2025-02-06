@@ -122,6 +122,7 @@ class User {
         return $result;
     } 
 
+
     public function update($data) {
         $sql = "update user 
                 set 

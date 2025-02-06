@@ -120,16 +120,16 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="container" id="app">
         <h1>重設密碼</h1>
 
         <table class="verify_section">
             <tr>
                 <td colspan="2">
                     <label for="birthday">姓名</label>
-                    <input type="text" id="name"required>
+                    <input type="text" id="name"required v-model="name">
                     <label for="birthday">生日</label>
-                    <input type="date" id="birthday" required>
+                    <input type="date" id="birthday" required v-model="birthday">
                 </td>
             </tr>
             <tr>
@@ -145,24 +145,24 @@
                 </td>
 
                 <td>
-                    <button type="button">發送驗證碼</button>
+                    <button type="button" @click="send_verify_code()">發送驗證碼</button>
                 </td>
             </tr>
             <tr>
-                <td colspan="2"><span class="hint-msg1">請輸入「姓名」和「生日」</span></td>
+                <td colspan="2"><span class="hint-msg1">{{ hint }}</span></td>
             </tr>
         </table>
 
         <hr>
 
-        <input type="text" id="verify-code" placeholder="驗證碼" required>
-        <input type="password" id="new-password" placeholder="新密碼" required>
-        <input type="password" id="confirm-password" placeholder="再次輸入新密碼" required>
-        <button type="submit" onclick="validatePasswords()" style="position: relative;">提交<span class="hint-msg2">請輸入「驗證碼」和「新密碼兩次」 / 密碼兩次輸入的不一致</span></button>
+        <input type="text" id="verify-code" placeholder="驗證碼" required v-model="verify_code">
+        <input type="password" id="new-password" placeholder="新密碼" required v-model="new_password">
+        <input type="password" id="confirm-password" placeholder="再次輸入新密碼" required v-model="confirm_password">
+        <button type="submit" onclick="validatePasswords()" style="position: relative;">提交<span class="hint-msg2">{{ submit_hint }}</span></button>
     </div>
 
     <script>
-        function validatePasswords() {
+        async function validatePasswords() {
             const passwordPattern = /^[A-Za-z0-9!@#$%^&*()_+\-=<>?]+$/;
             const newPassword = document.getElementById('new-password').value;
             const confirmPassword = document.getElementById('confirm-password').value;
@@ -177,9 +177,14 @@
                 return false;
             }
 
-            alert('密碼已成功提交');
+            await app.submit_verify_code();
             return true;
         }
     </script>
 </body>
+<script defer src="js/npm/vue/dist/vue.js"></script> 
+<script defer src="js/axios.min.js"></script> 
+<script defer src="js/npm/sweetalert2@9.js"></script>
+<script defer src="js/reset.js"></script>
+<script type="text/javascript" src="js/rm/jquery-3.4.1.min.js"></script>
 </html>
