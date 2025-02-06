@@ -271,5 +271,30 @@ class User {
             return $arr[2];
         }
     }
+
+    
+    public function updatePassword ($id, $password_hash) {
+        $sql = "update user 
+                set 
+                    password_hash = :password_hash
+                    where
+                    id = :id";
+
+        // Prepare the statement
+        $stmt = $this->db->prepare($sql);
+                    
+        // Bind parameters
+        $stmt->bindParam(':password_hash', $password_hash);
+        $stmt->bindParam(':id', $id);
+
+        // Execute the statement
+        if ($stmt->execute()) {
+            return "";
+        } else {
+            $arr = $stmt->errorInfo();
+            error_log($arr[2]);
+            return $arr[2];
+        }
+    }
 }
 ?>

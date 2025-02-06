@@ -20,7 +20,7 @@ if($auth_token == null) {
 
 include_once 'config/core.php';
 
-include_once 'objects/consult.php';
+include_once 'objects/user.php';
 include_once 'config/database.php';
 include_once 'objects/access_token.php';
 include_once 'mail.php';
@@ -55,7 +55,7 @@ if($token['reset_error_count'] > 3) {
 // Check if form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    $consult = new Consult($database);
+    $user = new User($database);
 
     $data = json_decode(file_get_contents('php://input'), true);
     // Get parameters from the query string
@@ -71,7 +71,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     try {
         // Fetch existing data by name and birthday
-        $existingData = $consult->getByNameAndBirthday($name, $birthday);
+        $existingData = $user->getByNameAndBirthday($name, $birthday);
 
         if ($existingData) {
             $email = $existingData[0]['email'];

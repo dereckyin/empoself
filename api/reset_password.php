@@ -20,7 +20,7 @@ if($auth_token == null) {
 
 include_once 'config/core.php';
 include_once 'config/conf.php';
-include_once 'objects/consult.php';
+include_once 'objects/user.php';
 include_once 'config/database.php';
 include_once 'objects/access_token.php';
 
@@ -62,7 +62,7 @@ if($verify_error_count_by_token > 3) {
 // Check if form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    $consult = new Consult($database);
+    $user = new User($database);
 
     $data = json_decode(file_get_contents('php://input'), true);
 
@@ -117,7 +117,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         try {
             // Fetch existing data by name and birthday
-            $existingData = $consult->getByNameAndBirthday($name, $birthday);
+            $existingData = $user->getByNameAndBirthday($name, $birthday);
 
             if (count($existingData) > 0) {
                 http_response_code(200);
@@ -126,7 +126,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 $password_hash = password_hash($new_password, PASSWORD_BCRYPT);
 
-                $consult->updatePassword($existingData[0]['id'], $password_hash);
+                $user->updatePassword($existingData[0]['id'], $password_hash);
                 
                 echo json_encode($existingData);
             } else {
