@@ -21,6 +21,11 @@ var app = new Vue({
 
          showSubmitHint: false,
          submit_hint: '',
+
+         countdown: 60, // Countdown timer in seconds
+         isButtonDisabled: false, // Button state
+
+         button_text : '發送驗證碼',
        }
   },
 
@@ -96,45 +101,120 @@ var app = new Vue({
       var must = [];
       if (!this.name) {
         must = [...must, '姓名'];
+        if(must.length > 0){
+          var html = must.join('」、「');
+          html = "請輸入「" + html + "」";
+          this.submit_hint = html;
+          this.showSubmitHint = true;
+          return false;
+        }
       }
       if(!this.birthday) {
         must = [...must, '生日'];
+        if(must.length > 0){
+          var html = must.join('」、「');
+          html = "請輸入「" + html + "」";
+          this.submit_hint = html;
+          this.showSubmitHint = true;
+          return false;
+        }
       }
 
       if(!this.verify_code) {
         must = [...must, '驗證碼'];
+        if(must.length > 0){
+          var html = must.join('」、「');
+          html = "請輸入「" + html + "」";
+          this.submit_hint = html;
+          this.showSubmitHint = true;
+          return false;
+        }
       }
 
       if(!this.new_password) {
         must = [...must, '新密碼'];
+        if(must.length > 0){
+          var html = must.join('」、「');
+          html = "請輸入「" + html + "」";
+          this.submit_hint = html;
+          this.showSubmitHint = true;
+          return false;
+        }
       }
 
       if(!this.confirm_password) {
         must = [...must, '確認密碼'];
+        if(must.length > 0){
+          var html = must.join('」、「');
+          html = "請輸入「" + html + "」";
+          this.submit_hint = html;
+          this.showSubmitHint = true;
+          return false;
+        }
+      }
+
+      const passwordPattern = /^[A-Za-z0-9!@#$%^&*()_+\-=<>?]+$/;
+      const newPassword = document.getElementById('new-password').value;
+      const confirmPassword = document.getElementById('confirm-password').value;
+
+      var recaptcha = document.getElementById('recaptchaResponse');
+      if(!recaptcha.value){
+        must = [...must, '請勾選我不是機器人'];
+        if(must.length > 0){
+          var html = must.join('」、「');
+          html = "「" + html + "」";
+          this.submit_hint = html;
+          this.showSubmitHint = true;
+          return false;
+        }
+      }
+
+      if (!passwordPattern.test(newPassword) || !passwordPattern.test(confirmPassword)) {
+          must = [...must, '密碼只能是英文大小寫字母、數字或特殊符號'];
+          if(must.length > 0){
+            html = must.join('');
+            this.submit_hint = html;
+            this.showSubmitHint = true;
+            return false;
+          }
       }
 
       if(this.new_password != this.confirm_password) {
-        must = [...must, '新密碼和確認密碼不相同'];
+        must = [...must, '兩次輸入的密碼不一致'];
+        if(must.length > 0){
+          html = must.join('');
+          this.submit_hint = html;
+          this.showSubmitHint = true;
+          return false;
+        }
       }
 
       if(must.length > 0){
         var html = must.join('」、「');
-        html = "請填寫以下欄位: 「" + html + "」";
-        this.hint = html;
-        this.showHint = true;
+        html = "「" + html + "」";
+        this.submit_hint = html;
+        this.showSubmitHint = true;
         return false;
       }
 
-      const parameters = { name: this.name, birthday: this.birthday, verify_code: this.verify_code, new_password: this.new_password, confirm_password: this.confirm_password };
+      const parameters = { name: this.name, birthday: this.birthday, verify_code: this.verify_code, new_password: this.new_password, confirm_password: this.confirm_password, recaptcha_response: recaptcha.value };
       
       axios
           .post("api/reset_password", parameters, headers = {"Content-Type": "application/json"})
           .then((res) => {
               if (res.data.length > 0) {
-                  _this.loadOldData(res.data[0]);
-                  $(".mask").toggle();
-                  $(".popup-dialog").toggle();
-                  _this.verified = true;
+               Swal.fire({
+                text: "重設密碼成功",
+                icon: "success",
+                confirmButtonColor: "#3085d6",
+                confirmButtonText: "OK",
+              }).then((result) => {
+                if (result.value) {
+                  window.location.href = "login";
+                }
+            });
+                  
+
               } else {
                   Swal.fire({
                       text: res.data.message,
@@ -159,6 +239,24 @@ var app = new Vue({
           }
       );
     },
+
+    startCountdown: function() {
+      this.isButtonDisabled = true; // Disable the button
+      this.countdown = 60; // Reset countdown to 60 seconds
+
+      const interval = setInterval(() => {
+        this.countdown--;
+        this.button_text = "發送驗證碼 ... " + this.countdown + "秒";
+
+        if (this.countdown <= 0) {
+          clearInterval(interval); // Clear the interval when countdown reaches 0
+          this.isButtonDisabled = false; // Re-enable the button
+
+          this.button_text = "發送驗證碼"; // Reset the button text
+          this.hint = "";
+        }
+      }, 1000); // Update every second
+    }
 
   }
 

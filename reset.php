@@ -145,11 +145,11 @@
                 </td>
 
                 <td>
-                    <button type="button" @click="send_verify_code()">發送驗證碼</button>
+                    <button type="button" @click="send_verify_code()" :disabled="isButtonDisabled">{{ button_text }}</button>
                 </td>
             </tr>
             <tr>
-                <td colspan="2"><span class="hint-msg1">{{ hint }}</span></td>
+                <td colspan="2"><span class="hint-msg1" v-if="showHint">{{ hint }}</span></td>
             </tr>
         </table>
 
@@ -158,33 +158,34 @@
         <input type="text" id="verify-code" placeholder="驗證碼" required v-model="verify_code">
         <input type="password" id="new-password" placeholder="新密碼" required v-model="new_password">
         <input type="password" id="confirm-password" placeholder="再次輸入新密碼" required v-model="confirm_password">
-        <button type="submit" onclick="validatePasswords()" style="position: relative;">提交<span class="hint-msg2">{{ submit_hint }}</span></button>
+        <input type="hidden" name="recaptcha_response" id="recaptchaResponse">
+        <button type="submit" style="position: relative;" class="g-recaptcha" 
+                                                                    data-sitekey='6LdWV8AqAAAAADF7umMs-HirSiyCAg5QmpU-G3mi'
+                                                                    data-callback='onSubmit' 
+                                                                    data-action='submit'>提交<span class="hint-msg2" v-if="showSubmitHint">{{ submit_hint }}</span></button>
     </div>
 
-    <script>
-        async function validatePasswords() {
-            const passwordPattern = /^[A-Za-z0-9!@#$%^&*()_+\-=<>?]+$/;
-            const newPassword = document.getElementById('new-password').value;
-            const confirmPassword = document.getElementById('confirm-password').value;
-
-            if (!passwordPattern.test(newPassword) || !passwordPattern.test(confirmPassword)) {
-                alert('密碼只能是英文大小寫字母、數字或特殊符號');
-                return false;
-            }
-
-            if (newPassword !== confirmPassword) {
-                alert('兩次輸入的密碼不一致');
-                return false;
-            }
-
-            await app.submit_verify_code();
-            return true;
-        }
-    </script>
 </body>
 <script defer src="js/npm/vue/dist/vue.js"></script> 
 <script defer src="js/axios.min.js"></script> 
 <script defer src="js/npm/sweetalert2@9.js"></script>
 <script defer src="js/reset.js"></script>
 <script type="text/javascript" src="js/rm/jquery-3.4.1.min.js"></script>
+<script src="https://www.google.com/recaptcha/api.js"></script>
+<script>
+    function onSubmit(token) {
+     document.getElementById("recaptchaResponse").value = token;
+        app.submit_verify_code();
+   }
+
+    $(document).keypress(function (e) {
+  if (e.which === 13 && $('input[type="password"]').is(':focus')) {
+    if ($('input[type="password"]').val().length < 1) {
+      e.preventDefault();
+    }
+    else
+        app.submit_verify_code();
+  }
+});
+</script>
 </html>

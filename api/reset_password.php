@@ -19,7 +19,7 @@ if($auth_token == null) {
 }
 
 include_once 'config/core.php';
-
+include_once 'config/conf.php';
 include_once 'objects/consult.php';
 include_once 'config/database.php';
 include_once 'objects/access_token.php';
@@ -28,6 +28,7 @@ include_once 'objects/access_token.php';
 $database = new Database();
 $database->getConnection();
 $access_token = new AccessToken($database);
+$conf = new Conf();
 $token = $access_token->get($auth_token);
 $error_count_by_ip = $access_token->get_error_count_by_ip($_SERVER['REMOTE_ADDR']);
 $verify_error_count_by_token = $access_token->get_verify_error_count_by_token($auth_token);
@@ -66,6 +67,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $data = json_decode(file_get_contents('php://input'), true);
 
     $verify_code = isset($data['verify_code']) ? $data['verify_code'] : '';
+
+    $recaptcha_response = isset($data['recaptcha_response']) ? $data['recaptcha_response'] : '';
+
+    if($recaptcha_response == '') {
+        http_response_code(400);
+        echo json_encode(array("message" => "No data found."));
+        exit();
+    }else{
+        // Build POST request:
+        $recaptcha_url = 'https://www.google.com/recaptcha/api/siteverify';
+
+        // Make and decode POST request:
+        $recaptcha = file_get_contents($recaptcha_url . '?secret=' . $conf::$recaptcha_secret . '&response=' . $recaptcha_response);
+        $recaptcha = json_decode($recaptcha);
+
+        // Take action based on the score returned:
+        if ($recaptcha->score < 0.5) {
+            http_response_code(401);
+            echo json_encode(array("message" => "Access denied."));
+            die();
+        }
+    }
+
+
 
     $verify_code_in_db = $access_token->get_verify_code_by_token($auth_token);
 
