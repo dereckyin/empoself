@@ -47,6 +47,7 @@ class User {
         $query = "SELECT user.id, `name`, username, password_hash, account_status, user_type, email, phone
                 FROM " . $this->table_name . "
                 WHERE phone = ? 
+                and `status` <> -1
                 LIMIT 0,1";
     
         // prepare the query
@@ -102,7 +103,7 @@ class User {
                         referral_source_other, 
                         health_condition, 
                         health_condition_other
-                FROM `user` WHERE `name` = :name AND `birthday` = :birthday";
+                FROM `user` WHERE `name` = :name AND `birthday` = :birthday and `status` <> -1";
 
         $stmt = $this->db->prepare($query);
         
@@ -152,6 +153,7 @@ class User {
                     company_tax_id = :company_tax_id,
                     company_name = :company_name
                     where
+                    `status` <> -1 and
                     name = :name and
                     birthday = :birthday";
 

@@ -69,3 +69,6 @@ ADD COLUMN `reset_error_count` int(11) default 0;
 
 ALTER TABLE auth_token
 ADD COLUMN `reset_verify_error_count` int(11) default 0;
+
+ALTER TABLE user
+ADD COLUMN `status` int(11) default 0;
