@@ -46,11 +46,11 @@ if($token['reset_error_count'] > 3) {
     die();
 }
 
-if($error_count_by_ip['reset_error_count'] > 3) {
-    http_response_code(401);
-    echo json_encode(array("message" => "Access denied."));
-    die();
-}
+// if($error_count_by_ip['reset_error_count'] > 3) {
+//     http_response_code(401);
+//     echo json_encode(array("message" => "Access denied."));
+//     die();
+// }
 
 if($verify_error_count_by_token > 3) {
     http_response_code(401);
@@ -110,7 +110,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // Validate input
         if (empty($name) || empty($birthday)) {
-            http_response_code(400);
+            http_response_code(404);
             echo json_encode(array("message" => "No data found."));
             exit();
         }

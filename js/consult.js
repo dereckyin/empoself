@@ -41,6 +41,12 @@ var app = new Vue({
     },
   
     watch: {
+
+      showHint: function() {
+        setTimeout(() => {
+          this.showHint = false;
+        }, 3000);
+      }
   
     },
   
@@ -251,7 +257,7 @@ var app = new Vue({
         ).finally(() => {
             _this.is_submit = false;
         });
-        
+
       },
 
 

@@ -40,6 +40,17 @@ var app = new Vue({
   },
 
   watch: {
+    showHint: function() {
+      setTimeout(() => {
+        this.showHint = false;
+      }, 3000);
+    },
+
+    showSubmitHint: function() {
+      setTimeout(() => {
+        this.showSubmitHint = false;
+      }, 3000);
+    }
 
   },
 
@@ -232,14 +243,20 @@ var app = new Vue({
           .catch((err) => {
               if (err.status == 401) {
 
-                  _this.showHint = true;
-                  _this.hint = err.data.message;
+                  _this.showSubmitHint = true;
+                  _this.submit_hint = err.data.message;
               }
-              
+
+              if (err.status == 404) {
+
+                _this.showSubmitHint = true;
+                _this.submit_hint = err.data.message;
+            }
+
               if (err.status == 501) {
 
-                  _this.showHint = true;
-                  _this.hint = err.data.message;
+                  _this.showSubmitHint = true;
+                  _this.submit_hint = err.data.message;
               }
 
           }
