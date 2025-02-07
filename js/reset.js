@@ -25,7 +25,7 @@ var app = new Vue({
          countdown: 60, // Countdown timer in seconds
          isButtonDisabled: false, // Button state
 
-         button_text : '發送驗證碼',
+         button_text : '',
 
          is_submit: false,
        }
@@ -40,17 +40,17 @@ var app = new Vue({
   },
 
   watch: {
-    showHint: function() {
-      setTimeout(() => {
-        this.showHint = false;
-      }, 3000);
-    },
+    // showHint: function() {
+    //   setTimeout(() => {
+    //     this.showHint = false;
+    //   }, 3000);
+    // },
 
-    showSubmitHint: function() {
-      setTimeout(() => {
-        this.showSubmitHint = false;
-      }, 3000);
-    }
+    // showSubmitHint: function() {
+    //   setTimeout(() => {
+    //     this.showSubmitHint = false;
+    //   }, 3000);
+    // }
 
   },
 
@@ -75,6 +75,8 @@ var app = new Vue({
         return false;
 
       this.is_submit = true;
+
+      this.reset();
 
       const existingData = await this.sendVerifyCode();
       this.startCountdown();
@@ -212,6 +214,8 @@ var app = new Vue({
       if(this.is_submit)
         return false;
 
+      this.reset();
+
       this.is_submit = true;
 
       const parameters = { name: this.name, birthday: this.birthday, verify_code: this.verify_code, new_password: this.new_password, confirm_password: this.confirm_password, recaptcha_response: recaptcha.value };
@@ -271,17 +275,25 @@ var app = new Vue({
 
       const interval = setInterval(() => {
         this.countdown--;
-        this.button_text = "發送驗證碼 ... " + this.countdown + "秒";
+        this.button_text = "( " + this.countdown + "秒 )";
 
         if (this.countdown <= 0) {
           clearInterval(interval); // Clear the interval when countdown reaches 0
           this.isButtonDisabled = false; // Re-enable the button
 
-          this.button_text = "發送驗證碼"; // Reset the button text
+          this.button_text = ""; // Reset the button text
           this.hint = "";
         }
       }, 1000); // Update every second
-    }
+    },
+
+    reset: function() {
+      this.showHint = false;
+      this.hint = '';
+
+      this.showSubmitHint = false;
+      this.submit_hint = '';
+    },
 
   }
 

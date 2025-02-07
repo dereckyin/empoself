@@ -175,7 +175,7 @@
                 </td>
 
                 <td>
-                    <button type="button" @click="send_verify_code()" :disabled="isButtonDisabled">{{ button_text }}</button>
+                    <button type="button" @click="send_verify_code()" style="height: 64px;" :disabled="isButtonDisabled">發送驗證碼<br>{{ button_text }}</button>
                 </td>
             </tr>
             <tr>

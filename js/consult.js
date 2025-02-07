@@ -23,7 +23,7 @@ var app = new Vue({
       isButtonDisabled: false, // Button state
       hint: '',
       verified: false,
-      button_text : '發送驗證碼',
+      button_text : '',
 
       is_submit: false,
     },
@@ -42,11 +42,11 @@ var app = new Vue({
   
     watch: {
 
-      showHint: function() {
-        setTimeout(() => {
-          this.showHint = false;
-        }, 3000);
-      }
+      // showHint: function() {
+      //   setTimeout(() => {
+      //     this.showHint = false;
+      //   }, 3000);
+      // }
   
     },
   
@@ -396,13 +396,13 @@ var app = new Vue({
 
         const interval = setInterval(() => {
           this.countdown--;
-          this.button_text = "發送驗證碼 ... " + this.countdown + "秒";
+          this.button_text = "( " + this.countdown + "秒 )";
 
           if (this.countdown <= 0) {
             clearInterval(interval); // Clear the interval when countdown reaches 0
             this.isButtonDisabled = false; // Re-enable the button
 
-            this.button_text = "發送驗證碼"; // Reset the button text
+            this.button_text = ""; // Reset the button text
             this.hint = "";
           }
         }, 1000); // Update every second
