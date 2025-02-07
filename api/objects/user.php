@@ -91,7 +91,7 @@ class User {
 
     public function getByNameAndBirthday($name, $birthday) {
         // Prepare the SQL statement using PDO
-        $query = "SELECT `name`, 
+        $query = "SELECT id, `name`, 
                         gender, 
                         birthday, 
                         phone, 
