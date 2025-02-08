@@ -46,11 +46,11 @@ var app = new Vue({
     //   }, 3000);
     // },
 
-    // showSubmitHint: function() {
-    //   setTimeout(() => {
-    //     this.showSubmitHint = false;
-    //   }, 3000);
-    // }
+    showSubmitHint: function() {
+      setTimeout(() => {
+        this.showSubmitHint = false;
+      }, 7000);
+    }
 
   },
 

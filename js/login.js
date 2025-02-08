@@ -36,10 +36,20 @@ var app = new Vue({
         },
 
     checkLogin: function(){
-      if (this.phone === '')
-        return false;
-      if(this.password === '')
-        return false;
+ 
+      var must = [];
+        if (!this.phone) {
+          must = [...must, '手機號碼'];
+        }
+        if(!this.password) {
+          must = [...must, '密碼'];
+        }
+
+        if(must.length > 0){
+          this.hint = '請輸入「手機號碼」和「密碼」';
+          this.showHint = true;
+          return false;
+        }
 
       var recaptcha = document.getElementById('recaptchaResponse');
 
@@ -54,11 +64,8 @@ var app = new Vue({
       axios.post('api/login', form_Data)
         .then(function(response){
           if(response.data['error']){
-            Swal.fire({
-              text: response.data['error'],
-              icon: 'error',
-              confirmButtonText: 'OK'
-            })
+            this.hint = ' 手機號碼 或 密碼 錯誤';
+            this.showHint = true;
           }
           else{
             _this.setCookie("jwt", response.data['jwt']);
