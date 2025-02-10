@@ -175,11 +175,11 @@
                 </td>
 
                 <td>
-                    <button type="button" @click="send_verify_code()" style="height: 64px;" :disabled="isButtonDisabled">發送驗證碼<br>{{ button_text }}</button>
+                    <button type="button" @click="send_verify_code()" style="height: 66px;" :disabled="isButtonDisabled">發送驗證碼<br>{{ button_text }}</button>
                 </td>
             </tr>
             <tr>
-                <td colspan="2"><span class="hint-msg1" v-if="showHint">{{ hint }}</span></td>
+                <td colspan="2" style="height: 24px;"><span class="hint-msg1" v-if="showHint">{{ hint }}</span></td>
             </tr>
         </table>
 

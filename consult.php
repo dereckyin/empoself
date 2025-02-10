@@ -298,7 +298,7 @@
         <div id="section2" class="hidden">
             <h1>為什麼是肌力訓練</h1>
             <div class="image-container">
-                <h3>迷思一：怕進來上教 金剛芭比</h3>
+                <h3>迷思一：怕進來上教練課會變金剛芭比</h3>
                 <img src="images/image1.jpg" alt="圖片1">
             </div>
             <div class="image-container">
