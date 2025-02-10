@@ -25,7 +25,11 @@ var app = new Vue({
   },
 
   watch: {
-
+    showHint: function() {
+      setTimeout(() => {
+        this.showHint = false;
+      }, 5000);
+    }
   },
 
   methods: {
