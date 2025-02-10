@@ -64,8 +64,8 @@ var app = new Vue({
       axios.post('api/login', form_Data)
         .then(function(response){
           if(response.data['error']){
-            this.hint = ' 手機號碼 或 密碼 錯誤';
-            this.showHint = true;
+            _this.hint = ' 手機號碼 或 密碼 錯誤';
+            _this.showHint = true;
           }
           else{
             _this.setCookie("jwt", response.data['jwt']);
